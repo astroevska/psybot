@@ -74,7 +74,7 @@ async def setAnswer(callback: CallbackQuery) -> AnswerCallbackQuery:
 @dp.callback_query(text="stat")
 async def getStatistics(callback: CallbackQuery) -> AnswerCallbackQuery:
     await callback.message.answer_photo(
-        savePlot(editPlotFigure(getPlot(globals.currentTest['content']['interpretor'], isStyled=True), align="center")),
+        savePlot(editPlotFigure(getPlot(globals.currentTest['content']['interpretor'], callback.from_user.id, isStyled=True, isResponsibleX=True), align="center")),
         caption="Динамика вашего психологического состояния",
         reply_markup=getButtons(callback.data)
     )

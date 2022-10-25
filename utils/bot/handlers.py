@@ -1,6 +1,9 @@
+from datetime import datetime
+from dateutil import parser
 from typing import List
 from aiogram.types import CallbackQuery
 from aiogram.methods import AnswerCallbackQuery
+from db.insert import insertResult
 
 from init.globals import globals
 from utils.bot.keyboard import getButtons
@@ -29,6 +32,13 @@ async def handleLastQuestion(callback: CallbackQuery) -> AnswerCallbackQuery:
     globals.resultIndex = getResult(globals.currentTest['content']['interpretor'], globals.result)
     text: str = f"Вы прошли тест. Ваш результат: <b>{globals.result} баллов</b>.\nПо шкале Бека он соответствует следующему состоянию: <b>{globals.currentTest['content']['interpretor'][globals.resultIndex][2]}</b>.\n\n{globals.currentTest['content']['interpretor'][globals.resultIndex][3]}"
 
+    insertResult({
+        "telegram_id": callback.from_user.id,
+        "test_name": globals.currentTest["name"],
+        "result": globals.result,
+        "date": parser.parse(str(datetime.now()))
+    })
+    
     await changeMessage(
         callback, 
         f"{text}\n\n{getHelpMessage()}" if globals.resultIndex > 1 else text,

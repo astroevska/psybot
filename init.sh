@@ -9,8 +9,10 @@ source ./env/bin/activate
 # install requirement packages
 pip install -r requirements.txt
 
-# inserе token of your bot
+# insert token of your bot
 perl -i -pe"s/t123456789/$1/g" constants/config.py
+
+# inserrt connection_string of your MongoDB
 perl -i -pe"s/mongodb123456789/$2/g" constants/config.py
 
 # start bot

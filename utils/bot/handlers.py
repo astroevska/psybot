@@ -1,11 +1,11 @@
-from datetime import datetime
-from dateutil import parser
 from typing import List
+from dateutil import parser
+from datetime import datetime
 from aiogram.types import CallbackQuery
 from aiogram.methods import AnswerCallbackQuery
-from db.insert import insertResult
 
 from init.globals import globals
+from db.insert import insertResult
 from utils.bot.keyboard import getButtons
 from utils.bot.message import clearStartMessage, changeMessage
 from utils.helpers import getTag, getResult, clearTestData, getHelpMessage

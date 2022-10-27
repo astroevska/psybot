@@ -4,7 +4,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from init.globals import globals
 from constants.types import TTest
-from constants.config import TESTS_CONFIG
+from constants.data import TESTS_CONFIG
 
 
 def getTestKeyboardFab(builder: InlineKeyboardBuilder, tests: List[TTest]) -> InlineKeyboardMarkup:

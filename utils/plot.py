@@ -1,32 +1,31 @@
 import io
-import pandas as pd
 import seaborn as sns
-
-from datetime import date
-from functools import reduce
-from db.get import getResults
 import matplotlib.dates as mdates
+
 from matplotlib import axes, figure
 from matplotlib.patches import Patch
 from aiogram.types import BufferedInputFile
 from typing import Any, Optional, List, Set
 
+from db.get import getResults
 from init.globals import globals
-from utils.helpers import countRepeats
+from utils.helpers import get2dPlotData
 from constants.config import LEGEND_POSITION_Y
-from constants.types import TInterpretor, TResultDF
-from utils.datetime import datetimeToDateStr, strToDate
+from constants.types import TInterpretor
 
 def setPlotResponsibleAxesX(ax: axes):
     ax.xaxis.set_major_locator(mdates.AutoDateLocator(minticks=1, maxticks=6))
     ax.xaxis.set_minor_locator(mdates.AutoDateLocator())
 
 def setPlotResultRange(
-    ax: axes, color: Set[float],
+    ax: axes,
+    color: Set[float],
     legendLabels: List[Optional[Patch]],
     label: str,
+    haveResultLabel = False
 ) -> List[Patch]:
-    ax.text(
+    
+    if haveResultLabel: ax.text(
         0.1, 
         LEGEND_POSITION_Y, 
         globals.result, 
@@ -36,6 +35,7 @@ def setPlotResultRange(
         verticalalignment='bottom', 
         transform=ax.transAxes
     )
+    
     legendLabels.insert(0, Patch(
         facecolor=color,
         label=label,
@@ -54,7 +54,7 @@ def setPlotRanges(ax: axes, ranges: List[TInterpretor]) -> axes:
         ax.axhspan(ranges[r][0], ranges[r][1] + 1, facecolor=color)
         
         if globals.resultIndex == r:
-            legendLabels = setPlotResultRange(ax, color, legendLabels, ranges[r][2])
+            legendLabels = setPlotResultRange(ax, color, legendLabels, ranges[r][2], True)
             continue
 
         legendLabels.insert(0, Patch(
@@ -80,29 +80,7 @@ def savePlot(plot: figure) -> BufferedInputFile:
     return BufferedInputFile(buf.read(), filename="file.png")
 
 def getPlot(ranges: List[TInterpretor], userId: int, isStyled: bool = True, isResponsibleX: bool = True) -> axes:
-    today = date.today()
-    resultList = reduce(
-        lambda acc, item: {
-            "result": [
-                *acc["result"], item[1][0] // item[1][1]
-            ], 
-            "date": [
-                *acc["date"], strToDate(item[0])
-            ]
-        },
-        countRepeats(getResults({"telegram_id": userId}), 'date', 'result', [str(today), globals.result, 1], datetimeToDateStr),
-        {"result": [], "date": []}
-    )
-    
-    df: TResultDF = pd.DataFrame(
-        {
-            "result": resultList["result"],
-            "date": resultList["date"]
-        }
-    )
-
-    ax: axes = sns.pointplot(data = df, x = "date", y = "result", joi = True)
-    
+    ax: axes = sns.pointplot(**get2dPlotData(getResults, {"telegram_id": userId}, {'x': 'date', 'y': 'result'}), join = True)
     ax.set(ylim=(0, ranges[-1][1]), title="Динамика психологического состояния")
     
     if isResponsibleX: setPlotResponsibleAxesX(ax)

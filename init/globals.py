@@ -1,5 +1,5 @@
-from constants.config import TESTS_CONFIG
 from constants.types import TGlobals
+from constants.data import TESTS_CONFIG
 
 
 globals = TGlobals(**{

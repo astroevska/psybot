@@ -1,5 +1,6 @@
-from init.globals import globals
 from aiogram.types import InlineKeyboardMarkup, CallbackQuery
+
+from init.globals import globals
 
 
 async def clearStartMessage():    

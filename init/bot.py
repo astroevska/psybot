@@ -7,8 +7,9 @@ from aiogram.methods import AnswerCallbackQuery
 from aiogram.types import InlineKeyboardMarkup, Message, CallbackQuery
 
 from init.globals import globals
+from constants.config import API_TOKEN
+from constants.data import TESTS_CONFIG
 from utils.bot.keyboard import getButtons
-from constants.config import API_TOKEN, TESTS_CONFIG
 from utils.plot import savePlot, getPlot, editPlotFigure
 from utils.bot.message import changeMessage, clearStartMessage
 from utils.helpers import getStartMessage, getTag, clearTestData

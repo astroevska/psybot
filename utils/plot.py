@@ -44,7 +44,7 @@ def setPlotResultRange(
 
     return legendLabels
 
-def setPlotRanges(ax: axes, ranges: List[TInterpretor]) -> axes:    
+def setPlotRanges(ax: axes, ranges: List[TInterpretor], isCurrent: bool) -> axes:    
     colorCount: int = len(ranges)
     colorStep: int = 1/colorCount
     legendLabels: List[Patch] = []
@@ -53,7 +53,7 @@ def setPlotRanges(ax: axes, ranges: List[TInterpretor]) -> axes:
         color = (colorStep*(r + 1), colorStep*(colorCount - r - 1), 0.0, 0.5)
         ax.axhspan(ranges[r][0], ranges[r][1] + 1, facecolor=color)
         
-        if globals.resultIndex == r:
+        if isCurrent and globals.resultIndex == r:
             legendLabels = setPlotResultRange(ax, color, legendLabels, ranges[r][2], True)
             continue
 
@@ -79,11 +79,12 @@ def savePlot(plot: figure) -> BufferedInputFile:
 
     return BufferedInputFile(buf.read(), filename="file.png")
 
-def getPlot(ranges: List[TInterpretor], userId: int, isStyled: bool = True, isResponsibleX: bool = True) -> axes:
-    ax: axes = sns.pointplot(**get2dPlotData(getResults, {"telegram_id": userId}, {'x': 'date', 'y': 'result'}), join = True)
-    ax.set(ylim=(0, ranges[-1][1]), title="Динамика психологического состояния")
+def getPlot(ranges: List[TInterpretor], testName: str, userId: int, isCurrent: bool = True, isResponsibleX: bool = True) -> axes:
+    ax: axes = sns.pointplot(**get2dPlotData(getResults, {"telegram_id": userId, "test_name": testName}, {'x': 'date', 'y': 'result'}, isCurrent), join = True)
+    ax.set(ylim=(0, ranges[-1][1]), title=testName)
+    
+    setPlotRanges(ax, ranges, isCurrent)
     
     if isResponsibleX: setPlotResponsibleAxesX(ax)
-    if isStyled: setPlotRanges(ax, ranges)
     
     return ax

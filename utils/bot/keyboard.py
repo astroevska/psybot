@@ -46,12 +46,25 @@ def getButtons(target: str, **args: Any) -> InlineKeyboardMarkup:
             InlineKeyboardButton(
                 text="Выбрать тест",
                 callback_data="start"
+            ),
+            InlineKeyboardButton(
+                text="Статистика",
+                callback_data="stat_choice"
             )
         )
         return builder.as_markup()
 
     if target == 'start':
         return getTestKeyboardFab(builder, TESTS_CONFIG)
+
+    if target == 'stat_choice':
+        builder.add(
+            InlineKeyboardButton(
+                text="Выход",
+                callback_data="exit_full"
+            )
+        )
+        return builder.as_markup()
     
     if target == 'stat':
         builder.add(
@@ -71,8 +84,13 @@ def getButtons(target: str, **args: Any) -> InlineKeyboardMarkup:
             InlineKeyboardButton(
                 text="Выбрать другой тест",
                 callback_data="start"
+            ),
+            InlineKeyboardButton(
+                text="Статистика",
+                callback_data="stat_choice"
             )
         )
+        builder.adjust(2)
         return builder.as_markup()
 
     if target.startswith('next_') and 'isEnd' in args:

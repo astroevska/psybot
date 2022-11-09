@@ -88,14 +88,14 @@ def to2dDict(
 
 
 # Plot data helpers
-def get2dPlotData(dbGetter: Callable, dbSearchConfig: Dict[str, Union[str, int]], colNames: T2dPlotDF) -> T2dPlotData:
+def get2dPlotData(dbGetter: Callable, dbSearchConfig: Dict[str, Union[str, int]], colNames: T2dPlotDF, isCurrent: bool) -> T2dPlotData:
     return {
         "data": pd.DataFrame(to2dDict(
             dbGetter(dbSearchConfig),
             colNames,
             (strToDate, getQuotientWithoutRemainder),
             countRepeats,
-            [str(TODAY_DATE), globals.result, 1],
+            [str(TODAY_DATE), globals.result, 1] if isCurrent else None,
             datetimeToDateStr
         )), 
         **colNames

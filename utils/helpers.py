@@ -95,7 +95,7 @@ def get2dPlotData(dbGetter: Callable, dbSearchConfig: Dict[str, Union[str, int]]
             colNames,
             (strToDate, getQuotientWithoutRemainder),
             countRepeats,
-            [str(TODAY_DATE), globals.result, 1] if isCurrent else None,
+            [str(TODAY_DATE), globals.result, 1] if isCurrent and globals.result else None,
             datetimeToDateStr
         )), 
         **colNames

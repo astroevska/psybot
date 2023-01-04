@@ -22,7 +22,7 @@ $ cd psybot
 $ ./init.sh YOUR_TELEGRAM_BOT_TOKEN YOUR_MONGO_DB_CONNECTION_STRING
 ```
 1. `YOUR_TELEGRAM_BOT_TOKEN` is a **Telegram Bot Access Token**. There is a getting token [here](https://t.me/BotFather) through creating a new Telegram bot.
-2. `YOUR_MONGO_DB_CONNECTION_STRING` is a connection string for **MongoDB** that is accessible after the MongoDB Cluster creation. [See details](https://www.mongodb.com/docs/guides/atlas/connection-string).
+2. `YOUR_MONGO_DB_CONNECTION_STRING` is a connection string (without **mongodb+srv://**) for **MongoDB** that is accessible after the MongoDB Cluster creation. [See details](https://www.mongodb.com/docs/guides/atlas/connection-string).
 
 ## Goals
 - Add a multilingual support. Currently, **EN/RU**.

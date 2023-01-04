@@ -6,6 +6,7 @@ from matplotlib import axes, figure
 from matplotlib.patches import Patch
 from aiogram.types import BufferedInputFile
 from typing import Any, Optional, List, Set
+from pymongo import DESCENDING
 
 from db.get import getResults
 from init.globals import globals
@@ -76,10 +77,14 @@ def savePlot(plot: figure) -> BufferedInputFile:
     buf = io.BytesIO()
     plot.savefig(buf, format='png', bbox_inches="tight")
     buf.seek(0)
+    plot.clear()
 
     return BufferedInputFile(buf.read(), filename="file.png")
 
 def getPlot(ranges: List[TInterpretor], testName: str, userId: int, isCurrent: bool = True, isResponsibleX: bool = True) -> axes:
+    if isCurrent and globals.result == 0 and globals.data == {}:
+        globals.result = getResults({"telegram_id": userId, "test_name": testName}).sort('date', DESCENDING).limit(1)[0]['result']
+
     ax: axes = sns.pointplot(**get2dPlotData(getResults, {"telegram_id": userId, "test_name": testName}, {'x': 'date', 'y': 'result'}, isCurrent), join = True)
     ax.set(ylim=(0, ranges[-1][1]), title=testName)
     

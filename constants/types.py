@@ -28,6 +28,7 @@ class TTest(TypedDict):
 class TGlobals:
     currentTest: Optional[TTest]
     data: TResultData
+    currentUser: str
     currentStartMessage: Optional[Message]
     currentQuestion: int
     result: int
@@ -47,6 +48,16 @@ class TResult(TypedDict):
     result: int
     date: datetime
 
+class TUser(TypedDict):
+    telegram_id: int
+    name: str
+    telegram_username: str
+
+class TReminder(TypedDict):
+    user_id: str
+    chat_id: int
+    period: str
+    next: datetime
 
 # types for plot DataFrame
 class TResultDFItems(TypedDict):

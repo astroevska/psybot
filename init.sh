@@ -9,6 +9,7 @@ source ./env/bin/activate
 # install requirement packages
 pip install -r requirements.txt
 
+# create .env file 
 echo "API_TOKEN=t123456789\nMONGODB_CONNECTION=mongodb123456789" > .env
 
 # insert token of your bot

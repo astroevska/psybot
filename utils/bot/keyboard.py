@@ -15,7 +15,13 @@ def getTestKeyboardFab(builder: InlineKeyboardBuilder, tests: List[TTest]) -> In
                 callback_data=f"test_{i}"
             )
         )
-    
+
+    builder.add(
+        InlineKeyboardButton(
+            text="Выход",
+            callback_data="exit_full"
+        )
+    )
     builder.adjust(2)
     return builder.as_markup()
 
@@ -25,6 +31,25 @@ def getAnswersKeyboardFab(builder: InlineKeyboardBuilder, length: int) -> Inline
             InlineKeyboardButton(
                 text=str(i),
                 callback_data=f"next_{i}"
+            )
+        )
+    
+    builder.add(
+        InlineKeyboardButton(
+            text="Выход",
+            callback_data="exit_simple"
+        )
+    )
+    
+    builder.adjust(length)
+    return builder.as_markup()
+
+def getAnswersKeyboardFab(builder: InlineKeyboardBuilder, length: int) -> InlineKeyboardMarkup:
+    for i in range(length):
+        builder.add(
+            InlineKeyboardButton(
+                text=str(i),
+                callback_data=f"removeReminder_{i}"
             )
         )
     
@@ -50,6 +75,10 @@ def getButtons(target: str, **args: Any) -> InlineKeyboardMarkup:
             InlineKeyboardButton(
                 text="Статистика",
                 callback_data="stat_choice"
+            ),
+            InlineKeyboardButton(
+                text = "Напоминание",
+                callback_data="reminder"
             )
         )
         return builder.as_markup()
@@ -65,6 +94,36 @@ def getButtons(target: str, **args: Any) -> InlineKeyboardMarkup:
             )
         )
         return builder.as_markup()
+
+    if target == 'reminder':
+        builder.add(
+            InlineKeyboardButton(
+                text="Ежедневно",
+                callback_data="every_day"
+            ),
+            InlineKeyboardButton(
+                text="Каждую неделю",
+                callback_data="every_week"
+            ),
+            InlineKeyboardButton(
+                text="2 раза в месяц",
+                callback_data="every_2weeks"
+            ),
+            InlineKeyboardButton(
+                text="Каждый месяц",
+                callback_data="every_month"
+            ),
+            InlineKeyboardButton(
+                text="Удалить",
+                callback_data="remove_reminder"
+            ),
+            InlineKeyboardButton(
+                text="Выход",
+                callback_data="exit_full"
+            )
+        )
+        builder.adjust(2)
+        return builder.as_markup()
     
     if target == 'stat':
         builder.add(
@@ -75,7 +134,7 @@ def getButtons(target: str, **args: Any) -> InlineKeyboardMarkup:
         )
         return builder.as_markup()
 
-    if target.startswith('exit_'):
+    if target == 'exit_simple':
         builder.add(
             InlineKeyboardButton(
                 text="Начать тест заново",
@@ -88,6 +147,24 @@ def getButtons(target: str, **args: Any) -> InlineKeyboardMarkup:
             InlineKeyboardButton(
                 text="Статистика",
                 callback_data="stat_choice"
+            )
+        )
+        builder.adjust(2)
+        return builder.as_markup()
+
+    if target == 'exit_full':
+        builder.add(
+            InlineKeyboardButton(
+                text="Выбрать тест",
+                callback_data="start"
+            ),
+            InlineKeyboardButton(
+                text="Статистика",
+                callback_data="stat_choice"
+            ),
+            InlineKeyboardButton(
+                text = "Напоминание",
+                callback_data="reminder"
             )
         )
         builder.adjust(2)

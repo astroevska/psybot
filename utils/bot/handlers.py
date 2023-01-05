@@ -10,9 +10,11 @@ from utils.bot.keyboard import getButtons
 from utils.bot.message import clearStartMessage, changeMessage
 from utils.helpers import getTag, getResult, clearTestData, getHelpMessage
 
-async def handleFirstQuestion(callback: CallbackQuery) -> AnswerCallbackQuery:    
+
+async def handleFirstQuestion(callback: CallbackQuery) -> AnswerCallbackQuery:
     await callback.message.answer(
-        "\n".join([f"<b>{i})</b> {x}" for i, x in enumerate(globals.currentTest['content']['questions'][globals.currentQuestion])]),
+        "\n".join([f"<b>{i})</b> {x}" for i, x in enumerate(globals.currentTest['content']
+                  ['questions'][globals.currentQuestion])]),
         reply_markup=getButtons(callback.data, currentQuestion=globals.currentQuestion)
     )
 
@@ -22,7 +24,8 @@ async def handleFirstQuestion(callback: CallbackQuery) -> AnswerCallbackQuery:
 
     return await callback.answer()
 
-async def handleLastQuestion(callback: CallbackQuery) -> AnswerCallbackQuery:    
+
+async def handleLastQuestion(callback: CallbackQuery) -> AnswerCallbackQuery:
     if globals.currentStartMessage:
         await clearStartMessage()
 
@@ -32,15 +35,18 @@ async def handleLastQuestion(callback: CallbackQuery) -> AnswerCallbackQuery:
     globals.resultIndex = getResult(globals.currentTest['content']['interpretor'], globals.result)
     text: str = f"Вы прошли тест. Ваш результат: <b>{globals.result} баллов</b>.\nПо шкале Бека он соответствует следующему состоянию: <b>{globals.currentTest['content']['interpretor'][globals.resultIndex][2]}</b>.\n\n{globals.currentTest['content']['interpretor'][globals.resultIndex][3]}"
 
-    insertResult({
-        "telegram_id": callback.from_user.id,
-        "test_name": globals.currentTest["name"],
-        "result": globals.result,
-        "date": parser.parse(str(datetime.now()))
-    })
+    try:
+        insertResult({
+            "telegram_id": callback.from_user.id,
+            "test_name": globals.currentTest["name"],
+            "result": globals.result,
+            "date": parser.parse(str(datetime.now()))
+        })
+    except:
+        print('Insert Error')
     
     await changeMessage(
-        callback, 
+        callback,
         f"{text}\n\n{getHelpMessage()}" if globals.resultIndex > 1 else text,
         getButtons(callback.data, isEnd=True)
     )

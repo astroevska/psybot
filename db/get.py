@@ -9,3 +9,9 @@ def getTests(filters: Dict[str, Any] = {}) -> Cursor:
 
 def getResults(filters: Dict[str, Any] = {}) -> Cursor:
     return get_database()["results"].find(filters)
+
+def getUsers(filters: Dict[str, Any] = {}) -> Cursor:
+    return get_database()["users"].find(filters)
+
+def getReminders(filters: Dict[str, Any] = {}) -> Cursor:
+    return get_database()["reminders"].find(filters)

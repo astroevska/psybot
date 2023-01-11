@@ -1,5 +1,4 @@
 from aiogram.types import InlineKeyboardMarkup, CallbackQuery
-
 from init.globals import globals
 
 

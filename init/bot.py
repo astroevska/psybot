@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from typing import Coroutine
+from typing import Any, Coroutine
 from functools import reduce
 
 from aiogram import Bot, Dispatcher
@@ -8,14 +8,17 @@ from aiogram.filters import Text, Command
 from aiogram.methods import AnswerCallbackQuery
 from aiogram.types import InlineKeyboardMarkup, Message, CallbackQuery
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil import parser
 
+from constants.types import TGlobals
 from db.insert import insertUser, insertReminder
 from db.update import updateReminder
 from db.remove import removeReminder
 from db.get import getUsers, getReminders
 from init.globals import globals
+
+from init.middleware import UserDataMiddleware
 from constants.config import API_TOKEN
 from constants.data import TESTS_CONFIG
 from utils.bot.keyboard import getButtons
@@ -31,6 +34,13 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token=API_TOKEN, parse_mode="HTML")
 # bot dispatcher
 dp = Dispatcher()
+
+datetime.now().date()
+
+# dp.callback_query.middleware(UserDataMiddleware())
+# dp.message.middleware(UserDataMiddleware())
+# dp.edited_message.middleware(UserDataMiddleware())
+# dp.inline_query.middleware(UserDataMiddleware())
 
 # bot methods
 @dp.message(Command(commands=['start']))
@@ -52,7 +62,7 @@ async def startBot(message: Message):
         f"Привет, {message.from_user.first_name}!\n\nНе секрет, что многие разработчики сталкиваются с выгоранием, тревогой и депрессией. Этот бот призван помочь вам отслеживать свое психологическое состояние и предлагает несколько психологических тестов. Бот будет сохранять ваши результаты, и вы сможете отслеживать динамику изменения своего состояния на длительных промежутках. Это поможет вам вовремя заметить ухудшение или понять, какие факторы идут вам на пользу, а какие во вред.",
         reply_markup=getButtons('init')
     )
-
+ 
 @dp.callback_query(Text(text="start"))
 async def startBot(callback: CallbackQuery):
     await callback.message.reply(
@@ -87,7 +97,7 @@ async def setAnswer(callback: CallbackQuery) -> AnswerCallbackQuery:
     await changeMessage(
         callback,
         "\n".join([f"<b>{i})</b> {x}" for i,x in enumerate(globals.currentTest['content']['questions'][globals.currentQuestion])]),
-        getButtons(callback.data, currentQuestion=globals.currentQuestion)
+        getButtons(callback.data, currentTest=globals.currentTest, currentQuestion=globals.currentQuestion)
     )
 
     globals.currentQuestion += 1
@@ -143,31 +153,33 @@ async def getStatistics(callback: CallbackQuery) -> AnswerCallbackQuery:
     if globals.currentUser == '':
         globals.currentUser = getUsers({"telegram_id": callback.from_user.id})[0]["_id"]
 
-    userReminders = reduce(lambda a, b: f"{a}\nПериод: {b['period']}\nСледующее напоминание: {b['next']}\n", list(getReminders({"user_id": globals.currentUser})), "")
+    userReminders = reduce(lambda a, b: f"{a}\nПериод: {b['period']}\nСледующее напоминание вас ожидает {b['next'].strftime('<b>%d-%m-%Y</b> в <b>%H:%M:%S</b>')}\n", list(getReminders({"user_id": globals.currentUser})), "")
 
     await changeMessage(
             callback,
-            f"Вы можете настроить персональные напоминания о прохождении теста, чтобы регулярно отслеживать свое психологическое состояние. \n\n<b>Ваши напоминания:\n</b>{userReminders}\n Пожалуйста, выберите периодичность напоминаний: ",
+            f"Вы можете настроить персональные напоминания о прохождении теста, чтобы регулярно отслеживать свое психологическое состояние. \n\n<b>Ваши напоминания:\n</b>{userReminders}\nПожалуйста, выберите периодичность напоминаний: ",
             markup=getButtons(callback.data)
         )
 
     return await callback.answer()
 
-@dp.callback_query(Text(text='remove_reminder'))
+@dp.callback_query(Text(startswith='removeReminder'))
 async def deleteReminder(callback: CallbackQuery) -> AnswerCallbackQuery:
+    reminder = getTag(callback.data)
+
+    print(reminder)
+
+    if (reminder):
+        removeReminder({"next": parser.parse(reminder)})
+
     userReminders = list(getReminders({
-        "chat_id": callback.from_user.id
+    "user_id": globals.currentUser
     }))
 
-    try:
-        removeReminder()
-    except:
-        print("Remove error")
-    
     await changeMessage(
             callback,
-            f"Вы удалили напоминания.",
-            markup=getButtons(callback.data)
+            callback.message.text if reminder else 'Выберите, какой ремайндер вы хотите удалить.',
+            markup=getButtons('removeReminder', reminders=userReminders)
         )
 
     return await callback.answer()
@@ -219,41 +231,41 @@ async def setReminder(callback: CallbackQuery) -> AnswerCallbackQuery:
     return await callback.answer()
 
 
-async def sendMessage(chat_id: int, text: str):
+async def sendMessage(chat_id: int, text: str, sleepTime: int, nextDateTime: datetime, r: Any):
+    print('REMINDER')
+    await asyncio.sleep(sleepTime)
+
+    try:
+        updateReminder({"$set": {**r, "next": nextDateByPeriod(r['period'], nextDateTime)}}, {'_id': r['_id']})
+    except:
+        print('Update error.')
+        
     await bot.send_message(chat_id, text)
 
 
-async def scheduleReminders() -> Coroutine: 
-    now = datetime.utcnow()
-    tomorrow = now + datetime.timedelta(days=1)
-    start_time = datetime.datetime(tomorrow.year, tomorrow.month, tomorrow.day, 0, 0, 0)
-    end_time = start_time + datetime.timedelta(days=1)
+async def scheduleReminders(now: datetime) -> Coroutine: 
+    
+    tomorrow = now + timedelta(days=1)
+    start_time = datetime(tomorrow.year, tomorrow.month, tomorrow.day, 0, 0, 0)
+    end_time = start_time + timedelta(days=1)
 
     currentReminders = list(getReminders({"next": {
         '$gte': start_time,
         '$lt': end_time
     }}))
 
-    # TODO: plan next day reminders (parse time)
-    # TODO: handle cases when we start this function today and today reminders is expired (maybe we need to get not today reminders but tomorrow), also be careful with date of time
-    # TODO: insert to database new next datetime after task creating
-    # TODO: add middleware state with list of current user reminders with buttons: create new reminder and remove reminder. 
-    # Remove will be with buttons with each reminder. Pushing button will delete it from database.
-    # Add will open current reminders state
-    
     if len(currentReminders) != 0:
         for r in currentReminders:
-            nextDateTime = parser.parse(r['next'])
-            await asyncio.sleep(nextDateTime - now)
+            nextDateTime = r['next']
+            sleepTime = nextDateTime - now
             
-            try:
-                updateReminder({"$set": {**r, "next": nextDateByPeriod(r['period'], nextDateTime)}}, {'_id': r['_id']})
-            except:
-                print('Update error.')
-            
-            asyncio.create_task(sendMessage(r['chat_id'], f"Время проверить свое психологическое состояние!\nСледующее напоминание будет {nextDateTime}"))
-            
-
+            asyncio.create_task(sendMessage(
+                r['chat_id'],
+                f"Время проверить свое психологическое состояние!\nСледующее напоминание будет {nextDateTime.strftime('<b>%d-%m-%Y</b> в <b>%H:%M:%S</b>')}",
+                sleepTime.total_seconds(),
+                nextDateTime,
+                r
+            ))
 
 async def scheduleCheckReminders() -> Coroutine: 
     while True:

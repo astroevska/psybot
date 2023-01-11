@@ -12,8 +12,9 @@ from constants.types import T2dPlotDF, T2dPlotData, TPlotSupportedDataTypes, TIn
 
 
 # Telegram Bot data helpers
-def getTag(callbackData: str) -> str:
-    return callbackData.split("_")[1]
+def getTag(callbackData: str) -> Union[str, bool]:
+    splitted = callbackData.split("_")
+    return splitted[1] if len(splitted) > 1 else False
 
 def getStartMessage() -> str:
     startText = f"На данный момент в боте доступны следующие тесты:\n\n"

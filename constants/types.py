@@ -29,6 +29,7 @@ class TGlobals:
     currentTest: Optional[TTest]
     data: TResultData
     currentUser: str
+    user: str
     currentStartMessage: Optional[Message]
     currentQuestion: int
     result: int

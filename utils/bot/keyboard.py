@@ -3,6 +3,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from init.globals import globals
+from dateutil import parser
 from constants.types import TTest
 from constants.data import TESTS_CONFIG
 
@@ -44,23 +45,23 @@ def getAnswersKeyboardFab(builder: InlineKeyboardBuilder, length: int) -> Inline
     builder.adjust(length)
     return builder.as_markup()
 
-def getAnswersKeyboardFab(builder: InlineKeyboardBuilder, length: int) -> InlineKeyboardMarkup:
-    for i in range(length):
+def getRemindersKeyboardFab(builder: InlineKeyboardBuilder, reminders: list) -> InlineKeyboardMarkup:
+    for reminder in reminders:
         builder.add(
             InlineKeyboardButton(
-                text=str(i),
-                callback_data=f"removeReminder_{i}"
+                text=str(f"🔔 {reminder['next'].date()}  |  {reminder['period']} 🔄"),
+                callback_data=f"removeReminder_{reminder['next']}"
             )
         )
     
     builder.add(
         InlineKeyboardButton(
-            text="Выход",
-            callback_data="exit_simple"
+            text="Назад",
+            callback_data="reminder"
         )
     )
     
-    builder.adjust(length)
+    builder.adjust(1)
     return builder.as_markup()
 
 def getButtons(target: str, **args: Any) -> InlineKeyboardMarkup:
@@ -77,7 +78,7 @@ def getButtons(target: str, **args: Any) -> InlineKeyboardMarkup:
                 callback_data="stat_choice"
             ),
             InlineKeyboardButton(
-                text = "Напоминание",
+                text = "Напоминания",
                 callback_data="reminder"
             )
         )
@@ -115,7 +116,7 @@ def getButtons(target: str, **args: Any) -> InlineKeyboardMarkup:
             ),
             InlineKeyboardButton(
                 text="Удалить",
-                callback_data="remove_reminder"
+                callback_data="removeReminder"
             ),
             InlineKeyboardButton(
                 text="Выход",
@@ -124,6 +125,9 @@ def getButtons(target: str, **args: Any) -> InlineKeyboardMarkup:
         )
         builder.adjust(2)
         return builder.as_markup()
+
+    if target.startswith('removeReminder') and 'reminders' in args:
+        return getRemindersKeyboardFab(builder, args['reminders'])
     
     if target == 'stat':
         builder.add(
@@ -163,7 +167,7 @@ def getButtons(target: str, **args: Any) -> InlineKeyboardMarkup:
                 callback_data="stat_choice"
             ),
             InlineKeyboardButton(
-                text = "Напоминание",
+                text = "Напоминания",
                 callback_data="reminder"
             )
         )
@@ -185,8 +189,8 @@ def getButtons(target: str, **args: Any) -> InlineKeyboardMarkup:
         )
         return builder.as_markup()
 
-    if target.startswith('next_') and "currentQuestion" in args:
-        return getAnswersKeyboardFab(builder, len(globals.currentTest['content']['questions'][args['currentQuestion']]))
+    if target.startswith('next_') and "currentQuestion" in args and "currentTest" in args:
+        return getAnswersKeyboardFab(builder, len(args['currentTest']['content']['questions'][args['currentQuestion']]))
 
     builder.add(
         InlineKeyboardButton(

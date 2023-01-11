@@ -26,16 +26,17 @@ def setPlotResultRange(
     haveResultLabel = False
 ) -> List[Patch]:
     
-    if haveResultLabel: ax.text(
-        0.1, 
-        LEGEND_POSITION_Y, 
-        globals.result, 
-        fontsize=78, 
-        color=color, 
-        horizontalalignment='center', 
-        verticalalignment='bottom', 
-        transform=ax.transAxes
-    )
+    if haveResultLabel: 
+        ax.text(
+            0.1, 
+            LEGEND_POSITION_Y, 
+            globals.result, 
+            fontsize=78, 
+            color=color, 
+            horizontalalignment='center', 
+            verticalalignment='bottom', 
+            transform=ax.transAxes
+        )
     
     legendLabels.insert(0, Patch(
         facecolor=color,

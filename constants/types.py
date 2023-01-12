@@ -29,8 +29,8 @@ class TGlobals:
     currentTest: Optional[TTest]
     data: TResultData
     currentUser: str
-    user: str
     currentStartMessage: Optional[Message]
+    currentChatId: int
     currentQuestion: int
     result: int
     resultIndex: int
@@ -38,8 +38,8 @@ class TGlobals:
     def __iter__(self):
         return iter(astuple(self))
     
-    def __getitem__(self, keys):
-        return iter(getattr(self, k) for k in keys)
+    def __getitem__(self, key):
+        return getattr(self, key)
 
 
 # types for database

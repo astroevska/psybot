@@ -1,8 +1,6 @@
 from datetime import date, datetime, timedelta
 from dateutil import parser
 
-from constants.config import TODAY_DATE
-
 
 def datetimeToDateStr(dt: datetime) -> str:
     return str(dt.date())
@@ -11,7 +9,7 @@ def strToDate(dateString: str) -> date:
     try:
         return datetime.strptime(dateString, '%Y-%m-%d').date()
     except:
-        return TODAY_DATE
+        return date.today()
 
 def nextDateByPeriod(period: str, currentDT = datetime.now()):
     if period == 'day':

@@ -1,12 +1,14 @@
-from aiogram.types import InlineKeyboardMarkup, CallbackQuery
-from init.globals import globals
+from typing import Union
+from aiogram.types import InlineKeyboardMarkup, CallbackQuery,  Message
+from init.globals import globalsList
 
+async def clearStartMessage(globalsIdx: int):    
+    await globalsList[globalsIdx].currentStartMessage.delete()
+    
+    globalsList[globalsIdx].currentStartMessage = None
 
-async def clearStartMessage():    
-    await globals.currentStartMessage.delete()
-    globals.currentStartMessage = None
-
-async def changeMessage(callback: CallbackQuery, text: str, markup: InlineKeyboardMarkup):
-    if callback.message.photo:
-        await callback.message.edit_caption('')
-    await callback.message.edit_text(text, reply_markup=markup)
+async def changeMessage(message: Message, text: str, markup: InlineKeyboardMarkup, photo = None):
+    if message.photo:
+        await message.answer(text, reply_markup=markup)
+    else:
+        await message.edit_text(text, reply_markup=markup)

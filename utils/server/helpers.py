@@ -13,7 +13,7 @@ def getHandlerFactory(getter, keys=[]):
     return get_handler
 
 def postHandlerFactory(post_method, required={}, isDateNeed=False, updateGetter=None):
-    async def add_handler(request):
+    async def post_handler(request):
         try:
             data = await request.json()
         except:
@@ -42,4 +42,4 @@ def postHandlerFactory(post_method, required={}, isDateNeed=False, updateGetter=
 
         return web.json_response({"data": data, "status": "OK"})
 
-    return add_handler
+    return post_handler

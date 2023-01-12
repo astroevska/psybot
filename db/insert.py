@@ -9,8 +9,8 @@ async def insertTest(data: TTest):
 async def insertResult(data: TResult):
     await get_database()["results"].insert_one(data)
 
-async def insertUser(data: TUser):
-    await get_database()["users"].insert_one(data)
+def insertUser(data: TUser):
+    return get_database()["users"].insert_one(data).inserted_id
 
 async def insertReminder(data: TReminder):
     await get_database()["reminders"].insert_one(data)

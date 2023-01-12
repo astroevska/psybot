@@ -2,8 +2,6 @@ from typing import List, Any
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from init.globals import globals
-from dateutil import parser
 from constants.types import TTest
 from constants.data import TESTS_CONFIG
 
@@ -113,16 +111,24 @@ def getButtons(target: str, **args: Any) -> InlineKeyboardMarkup:
             InlineKeyboardButton(
                 text="Каждый месяц",
                 callback_data="every_month"
-            ),
-            InlineKeyboardButton(
-                text="Удалить",
-                callback_data="removeReminder"
-            ),
+            )
+        )
+        
+        if 'hasReminders' in args and args['hasReminders']:
+            builder.add(
+                InlineKeyboardButton(
+                    text="Удалить",
+                    callback_data="removeReminder"
+                )
+            )
+
+        builder.add(
             InlineKeyboardButton(
                 text="Выход",
                 callback_data="exit_full"
             )
         )
+        
         builder.adjust(2)
         return builder.as_markup()
 

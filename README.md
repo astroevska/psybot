@@ -25,14 +25,10 @@ $ ./init.sh YOUR_TELEGRAM_BOT_TOKEN YOUR_MONGO_DB_CONNECTION_STRING
 2. `YOUR_MONGO_DB_CONNECTION_STRING` is a connection string for **MongoDB** that is accessible after the MongoDB Cluster creation. [See details](https://www.mongodb.com/docs/guides/atlas/connection-string).
 
 ## Goals
-- Add a multilingual support. Currently, **EN/RU**.
-- Add more tests (depression, anxiety, burnout and etc).
-- Add a custom notifications feature (for a self-reminding to regular passing tests).
-- Add a newsletter feature (for rare notifications about the appearance of new bot features).
 - Deployment (Heroku, Vercel or DigitalOcean).
 - Dockerize the bot (to facilitate deployment).
-- Add a cross-platform functionality by implementing a complete web server with the **Telegram Bot API** as part of the service as one of the controllers with its API-endpoint.
-- Add more API-endpoints (to improve cross-platform functionality).
+- Add a multilingual support. Currently, **EN/RU**.
+- Add more tests (depression, anxiety, burnout and etc).
 - Start to create an IT ecosystem of psychological self-care with the bot as a part of it.
 
 ## References

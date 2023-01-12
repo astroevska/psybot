@@ -36,7 +36,7 @@ async def handleLastQuestion(callback: CallbackQuery) -> AnswerCallbackQuery:
     text: str = f"Вы прошли тест. Ваш результат: <b>{globals.result} баллов</b>.\nПо шкале Бека он соответствует следующему состоянию: <b>{globals.currentTest['content']['interpretor'][globals.resultIndex][2]}</b>.\n\n{globals.currentTest['content']['interpretor'][globals.resultIndex][3]}"
 
     try:
-        insertResult({
+        await insertResult({
             "telegram_id": callback.from_user.id,
             "test_name": globals.currentTest["name"],
             "result": globals.result,

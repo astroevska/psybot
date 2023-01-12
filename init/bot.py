@@ -1,26 +1,24 @@
-import asyncio
 import logging
-from typing import Any, Coroutine
+
+from typing import Coroutine
 from functools import reduce
+from datetime import datetime
+from dateutil import parser
 
 from aiogram import Bot, Dispatcher
 from aiogram.filters import Text, Command
 from aiogram.methods import AnswerCallbackQuery
 from aiogram.types import InlineKeyboardMarkup, Message, CallbackQuery
 
-from datetime import datetime, timedelta
-from dateutil import parser
-
-from constants.types import TGlobals
 from db.insert import insertUser, insertReminder
-from db.update import updateReminder
 from db.remove import removeReminder
-from db.get import getUsers, getReminders
-from init.globals import globals
+from db.get import getReminders, getUsers
 
-from init.middleware import UserDataMiddleware
+from init.globals import globals
 from constants.config import API_TOKEN
 from constants.data import TESTS_CONFIG
+from constants.types import TSendMessage
+
 from utils.bot.keyboard import getButtons
 from utils.plot import savePlot, getPlot, editPlotFigure
 from utils.bot.message import changeMessage, clearStartMessage
@@ -166,7 +164,7 @@ async def deleteReminder(callback: CallbackQuery) -> AnswerCallbackQuery:
         removeReminder({"next": parser.parse(reminder)})
 
     userReminders = list(getReminders({
-    "user_id": globals.currentUser
+        "user_id": globals.currentUser
     }))
 
     await changeMessage(
@@ -187,7 +185,7 @@ async def setReminder(callback: CallbackQuery) -> AnswerCallbackQuery:
         globals.currentUser = getUsers({"telegram_id": callback.from_user.id})[0]["_id"]
 
     try:
-        insertReminder({
+        await insertReminder({
             "user_id": globals.currentUser, 
             "period": reminder_type, 
             "chat_id": callback.from_user.id, 
@@ -224,47 +222,8 @@ async def setReminder(callback: CallbackQuery) -> AnswerCallbackQuery:
     return await callback.answer()
 
 
-async def sendMessage(chat_id: int, text: str, sleepTime: int, nextDateTime: datetime, r: Any):
-    await asyncio.sleep(sleepTime)
-
-    try:
-        updateReminder({"$set": {**r, "next": nextDateByPeriod(r['period'], nextDateTime)}}, {'_id': r['_id']})
-    except:
-        print('Update error.')
-        
-    await bot.send_message(chat_id, text)
-
-
-async def scheduleReminders(now: datetime) -> Coroutine: 
-    
-    tomorrow = now + timedelta(days=1)
-    start_time = datetime(tomorrow.year, tomorrow.month, tomorrow.day, 0, 0, 0)
-    end_time = start_time + timedelta(days=1)
-
-    currentReminders = list(getReminders({"next": {
-        '$gte': start_time,
-        '$lt': end_time
-    }}))
-
-    if len(currentReminders) != 0:
-        for r in currentReminders:
-            nextDateTime = r['next']
-            sleepTime = nextDateTime - now
-            
-            asyncio.create_task(sendMessage(
-                r['chat_id'],
-                f"Время проверить свое психологическое состояние!\nСледующее напоминание будет {nextDateTime.strftime('<b>%d-%m-%Y</b> в <b>%H:%M:%S</b>')}",
-                sleepTime.total_seconds(),
-                nextDateTime,
-                r
-            ))
-
-async def scheduleCheckReminders() -> Coroutine: 
-    while True:
-        await asyncio.sleep(86400)
-        asyncio.create_task(scheduleReminders())
-
+async def sendMessage(data: TSendMessage):
+    await bot.send_message(data["chat_id"], data["text"])
 
 async def main() -> Coroutine:
     await dp.start_polling(bot)
-    

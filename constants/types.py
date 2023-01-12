@@ -43,15 +43,22 @@ class TGlobals:
 
 
 # types for database
-class TResult(TypedDict):
-    telegram_id: int
+class TResulBase(TypedDict):
+    userId: int
     test_name: str
     result: int
     date: datetime
 
-class TUser(TypedDict):
+class TResult(TResulBase, total=False):
     telegram_id: int
+
+class TUserBase(TypedDict):
     name: str
+
+class TUser(TUserBase, total=False):
+    password: str
+    email: str
+    telegram_id: int
     telegram_username: str
 
 class TReminder(TypedDict):
@@ -64,6 +71,10 @@ class TReminder(TypedDict):
 class TResultDFItems(TypedDict):
     result: List[int]
     date: List[date]
+
+class TSendMessage(TypedDict):
+    telegram_id: int
+    text: str
 
 class TResultDF(pd.DataFrame):
     __class_getitem__ = classmethod(TResultDFItems)

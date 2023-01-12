@@ -1,4 +1,6 @@
+import json
 import pandas as pd
+from bson import json_util
 
 from functools import reduce
 from collections.abc import Iterable, ItemsView
@@ -101,3 +103,6 @@ def get2dPlotData(dbGetter: Callable, dbSearchConfig: Dict[str, Union[str, int]]
         )), 
         **colNames
     }
+    
+def json_serialize(data):
+    return str(json.dumps(data, ensure_ascii=False, indent=2, default=json_util.default)).encode().decode('utf-8')

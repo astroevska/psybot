@@ -37,11 +37,6 @@ dp = Dispatcher()
 
 datetime.now().date()
 
-# dp.callback_query.middleware(UserDataMiddleware())
-# dp.message.middleware(UserDataMiddleware())
-# dp.edited_message.middleware(UserDataMiddleware())
-# dp.inline_query.middleware(UserDataMiddleware())
-
 # bot methods
 @dp.message(Command(commands=['start']))
 async def startBot(message: Message):
@@ -167,8 +162,6 @@ async def getStatistics(callback: CallbackQuery) -> AnswerCallbackQuery:
 async def deleteReminder(callback: CallbackQuery) -> AnswerCallbackQuery:
     reminder = getTag(callback.data)
 
-    print(reminder)
-
     if (reminder):
         removeReminder({"next": parser.parse(reminder)})
 
@@ -232,7 +225,6 @@ async def setReminder(callback: CallbackQuery) -> AnswerCallbackQuery:
 
 
 async def sendMessage(chat_id: int, text: str, sleepTime: int, nextDateTime: datetime, r: Any):
-    print('REMINDER')
     await asyncio.sleep(sleepTime)
 
     try:

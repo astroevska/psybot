@@ -73,7 +73,7 @@ def getButtons(target: str, **args: Any) -> InlineKeyboardMarkup:
             ),
             InlineKeyboardButton(
                 text="Статистика",
-                callback_data="stat_choice"
+                callback_data="stat"
             ),
             InlineKeyboardButton(
                 text = "Напоминания",
@@ -85,16 +85,7 @@ def getButtons(target: str, **args: Any) -> InlineKeyboardMarkup:
     if target == 'start':
         return getTestKeyboardFab(builder, TESTS_CONFIG)
 
-    if target == 'stat_choice':
-        builder.add(
-            InlineKeyboardButton(
-                text="Выход",
-                callback_data="exit_full"
-            )
-        )
-        return builder.as_markup()
-
-    if target == 'reminder':
+    if target == 'reminder':        
         builder.add(
             InlineKeyboardButton(
                 text="Ежедневно",
@@ -139,27 +130,9 @@ def getButtons(target: str, **args: Any) -> InlineKeyboardMarkup:
         builder.add(
             InlineKeyboardButton(
                 text="Выход",
-                callback_data="exit_photo"
+                callback_data="exit_fullPhoto"
             )
         )
-        return builder.as_markup()
-
-    if target == 'exit_simple':
-        builder.add(
-            InlineKeyboardButton(
-                text="Начать тест заново",
-                callback_data="next_0"
-            ),
-            InlineKeyboardButton(
-                text="Выбрать другой тест",
-                callback_data="start"
-            ),
-            InlineKeyboardButton(
-                text="Статистика",
-                callback_data="stat_choice"
-            )
-        )
-        builder.adjust(2)
         return builder.as_markup()
 
     if target == 'exit_full':
@@ -170,7 +143,21 @@ def getButtons(target: str, **args: Any) -> InlineKeyboardMarkup:
             ),
             InlineKeyboardButton(
                 text="Статистика",
-                callback_data="stat_choice"
+                callback_data="stat"
+            ),
+            InlineKeyboardButton(
+                text = "Напоминания",
+                callback_data="reminder"
+            )
+        )
+        builder.adjust(2)
+        return builder.as_markup()
+
+    if target == 'exit_photo' or target == 'exit_fullPhoto':
+        builder.add(
+            InlineKeyboardButton(
+                text="Выбрать тест",
+                callback_data="start"
             ),
             InlineKeyboardButton(
                 text = "Напоминания",
@@ -181,16 +168,13 @@ def getButtons(target: str, **args: Any) -> InlineKeyboardMarkup:
         return builder.as_markup()
 
     if target.startswith('next_') and 'isEnd' in args:
-        builder.add(
-            InlineKeyboardButton(
-                text="Статистика",
-                callback_data="stat"
-            )
-        )
+        if 'message' in args:
+            args['message'].delete_reply_markup()
+            
         builder.add(
             InlineKeyboardButton(
                 text="Выход",
-                callback_data="exit_full"
+                callback_data="exit_photo"
             )
         )
         return builder.as_markup()
@@ -207,7 +191,7 @@ def getButtons(target: str, **args: Any) -> InlineKeyboardMarkup:
     builder.add(
         InlineKeyboardButton(
             text="Выход",
-            callback_data="exit_simple"
+            callback_data="exit_full"
         )
     )
     return builder.as_markup()

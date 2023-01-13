@@ -1,18 +1,20 @@
 import json
 import pandas as pd
 
-from aiogram.types import User
+from datetime import date, datetime
 from bson import json_util
-from datetime import date
 from functools import reduce
+from threading import Thread
+from aiogram.types import User
 from collections.abc import Iterable, ItemsView
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
-from constants.data import TESTS_CONFIG
+from db.insert import insertUnfinished
 from init.globals import globalsList
+from constants.data import TESTS_CONFIG
 from utils.globals import getOrSetCurrentGlobal
 from utils.datetime import datetimeToDateStr, strToDate
-from constants.types import T2dPlotDF, T2dPlotData, TPlotSupportedDataTypes, TInterpretor
+from constants.types import T2dPlotDF, T2dPlotData, TPlotSupportedDataTypes, TInterpretor, TResultData
 
 
 # Telegram Bot data helpers
@@ -43,8 +45,9 @@ def getResult(interpretor: List[TInterpretor], result: int) -> int:
 async def clearTestData(user: User):
     globalsIdx = await getOrSetCurrentGlobal(user)
 
-    globalsList[globalsIdx].data[user.id] = []
+    globalsList[globalsIdx].data[globalsList[globalsIdx].currentTest['name']] = []
     globalsList[globalsIdx].currentQuestion = 0
+    globalsList[globalsIdx].test_timeout = None
 
 
 # Abstract helpers
@@ -119,3 +122,25 @@ def get2dPlotData(dbGetter: Callable, dbSearchConfig: Dict[str, Union[str, int]]
 
 def json_serialize(data):
     return str(json.dumps(data, ensure_ascii=False, indent=2, default=json_util.default)).encode().decode('utf-8')
+
+def workInParallel(*funcs: List[Callable[[Any], Any]], args: Dict[str, List[Any]]):
+    results = []
+    for f in funcs:
+        t = Thread(target=f, args=args[f.__name__])
+        results.append(t)
+        
+        t.start()
+        t.join()
+
+    return results
+
+def insertUnfinishedResults(globalsIdx: int, user: User, data: TResultData):
+    print("hello")
+    try:
+        insertUnfinished({"datetime": datetime.now(),
+                   "userId": globalsList[globalsIdx].currentUser, "chat_id": user.id, "data": data})
+    except Exception as e:
+        print(e)
+
+    globalsList[globalsIdx].test_timeout.cancel()
+    globalsList[globalsIdx].test_timeout = None

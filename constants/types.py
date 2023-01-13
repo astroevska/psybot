@@ -1,3 +1,4 @@
+from threading import Thread
 import pandas as pd
 from numpy import datetime64, uint64
 from datetime import date, datetime, time
@@ -23,6 +24,12 @@ class TTest(TypedDict):
     description: str
     content: TTestContent
 
+class TUnfinishedTest(TypedDict):
+    userId: str
+    chat_id: str
+    datetime: datetime
+    data: TResultData
+
 # type for globals
 @dataclass
 class TGlobals:
@@ -34,6 +41,7 @@ class TGlobals:
     currentQuestion: int
     result: int
     resultIndex: int
+    test_timeout: Thread
 
     def __iter__(self):
         return iter(astuple(self))

@@ -16,6 +16,7 @@ def addNewGlobal() -> TGlobals:
         'data': dict(),
         'currentUser': "",
         'currentStartMessage': None,
+        'test_timeout': None,
         'currentChatId': 0,
         'currentQuestion': 0,
         'result': 0,

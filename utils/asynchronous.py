@@ -2,10 +2,10 @@ import asyncio
 from typing import Any, Coroutine
 from datetime import datetime, timedelta
 
-from utils.datetime import nextDateByPeriod
-from db.update import updateReminder
 from db.get import getReminders
 from init.bot import sendMessage
+from db.update import updateReminder
+from utils.datetime import nextDateByPeriod
 
 
 async def sendRemind(chat_id: int, text: str, sleepTime: int, nextDateTime: datetime, r: Any):
@@ -13,8 +13,8 @@ async def sendRemind(chat_id: int, text: str, sleepTime: int, nextDateTime: date
 
     try:
         await updateReminder({"$set": {**r, "next": nextDateByPeriod(r['period'], nextDateTime)}}, {'_id': r['_id']})
-    except:
-        print('Update error.')
+    except Exception as e:
+        print(e)
         
     await sendMessage(chat_id, text)
 

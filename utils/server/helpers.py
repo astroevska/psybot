@@ -16,8 +16,8 @@ def postHandlerFactory(post_method, required={}, isDateNeed=False, updateGetter=
     async def post_handler(request):
         try:
             data = await request.json()
-        except:
-            return web.json_response({"status": "error", "message": "Invalid JSON"})
+        except Exception as e:
+            return web.json_response({"status": "error", "message": "Invalid JSON", "details": e})
 
         if (updateGetter and "_id" not in data) or not all([all([subkey in data[field] for subkey in required[idx]]) if type(required[idx]) == list else field in data for idx, field in enumerate(required)]):
             return web.json_response({"status": "error", "message": "Identifiers is undefined."})

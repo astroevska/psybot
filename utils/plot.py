@@ -110,3 +110,11 @@ async def getPlot(ranges: List[TInterpretor], testName: str, user: User, isCurre
         setPlotResponsibleAxesX(ax)
 
     return ax
+
+async def getPlotImg(user: User, isCurrent: bool):
+    globalsIdx = await getOrSetCurrentGlobal(user)
+    
+    plot = await getPlot(globalsList[globalsIdx].currentTest['content']['interpretor'],
+            globalsList[globalsIdx].currentTest["name"], user, isCurrent, isResponsibleX=True)
+
+    return savePlot(editPlotFigure(plot, align="center"))

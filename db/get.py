@@ -21,3 +21,6 @@ def getReminders(filters: Dict[str, Any] = {}) -> Cursor:
 
 def getUnfinished(filters: Dict[str, Any] = {}) -> Cursor:
     return get_database()["unfinished_tests"].find_one(filters)
+
+def getButtons(filters: Dict[str, Any] = {}) -> Cursor:
+    return get_database()["buttons"].find(filters)

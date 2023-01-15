@@ -4,7 +4,7 @@ from numpy import datetime64, uint64
 from datetime import date, datetime, time
 from aiogram.types import Message
 from dataclasses import astuple, dataclass
-from typing import Any, Dict, List, NewType, TypeVar, TypedDict, Union, Optional
+from typing import Any, Dict, List, Literal, NewType, TypeVar, TypedDict, Union, Optional
 
 
 # simple types
@@ -14,7 +14,7 @@ TResultData = NewType('TResultData', Dict[str, List[int]])
 TInterpretor = NewType('TInterpretor', List[Union[int, str]])
 TPlotSupportedDataTypes = TypeVar('TPlotSupportedDataTypes', int, float, uint64, datetime, date, time, datetime64)
 
-# types for TEST_CONFIG
+# types for TESTS_CONFIG
 class TTestContent(TypedDict):
     questions: List[TQuestion]
     interpretor: List[TInterpretor]
@@ -29,6 +29,21 @@ class TUnfinishedTest(TypedDict):
     chat_id: str
     datetime: datetime
     data: TResultData
+
+# types for BUTTONS_CONFIG
+class TButtonBase(TypedDict):
+    text: str
+    callback_data: str
+
+class TButton(TButtonBase):
+    condition: str
+class TButtonsBase(TypedDict):
+    adjust: int
+    buttons: List[TButton]
+
+class TButtons(TButtonsBase):
+    conditions: List[str]
+    message_actions: List[Union[Literal["delete_reply_markup"], Literal["delete"]]]
 
 # type for globals
 @dataclass

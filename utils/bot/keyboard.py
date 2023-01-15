@@ -2,15 +2,15 @@ from typing import List, Any
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from constants.types import TTest
-from constants.data import TESTS_CONFIG
+from utils.globals import getKeyList
+from constants.data import TESTS_CONFIG, BUTTONS_CONFIG
 
 
-def getTestKeyboardFab(builder: InlineKeyboardBuilder, tests: List[TTest]) -> InlineKeyboardMarkup:
-    for i in range(len(tests)):
+def getTestKeyboardFab(builder: InlineKeyboardBuilder) -> InlineKeyboardMarkup:
+    for i in range(len(TESTS_CONFIG)):
         builder.add(
             InlineKeyboardButton(
-                text=tests[i]['name'],
+                text=TESTS_CONFIG[i]['name'],
                 callback_data=f"test_{i}"
             )
         )
@@ -24,6 +24,7 @@ def getTestKeyboardFab(builder: InlineKeyboardBuilder, tests: List[TTest]) -> In
     builder.adjust(2)
     return builder.as_markup()
 
+
 def getAnswersKeyboardFab(builder: InlineKeyboardBuilder, length: int) -> InlineKeyboardMarkup:
     for i in range(length):
         builder.add(
@@ -32,16 +33,17 @@ def getAnswersKeyboardFab(builder: InlineKeyboardBuilder, length: int) -> Inline
                 callback_data=f"next_{i}"
             )
         )
-    
+
     builder.add(
         InlineKeyboardButton(
             text="Выход",
             callback_data="exit_simple"
         )
     )
-    
+
     builder.adjust(length)
     return builder.as_markup()
+
 
 def getRemindersKeyboardFab(builder: InlineKeyboardBuilder, reminders: list) -> InlineKeyboardMarkup:
     for reminder in reminders:
@@ -51,147 +53,61 @@ def getRemindersKeyboardFab(builder: InlineKeyboardBuilder, reminders: list) -> 
                 callback_data=f"removeReminder_{reminder['next']}"
             )
         )
-    
+
     builder.add(
         InlineKeyboardButton(
             text="Назад",
             callback_data="reminder"
         )
     )
-    
+
     builder.adjust(1)
     return builder.as_markup()
 
+
 def getButtons(target: str, **args: Any) -> InlineKeyboardMarkup:
     builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
+    targetList = getKeyList(BUTTONS_CONFIG, "name")
 
-    if target == 'init':
-        builder.add(
-            InlineKeyboardButton(
-                text="Выбрать тест",
-                callback_data="start"
-            ),
-            InlineKeyboardButton(
-                text="Статистика",
-                callback_data="stat"
-            ),
-            InlineKeyboardButton(
-                text = "Напоминания",
-                callback_data="reminder"
-            )
-        )
-        return builder.as_markup()
+    try:
+        targetIdx = targetList.index(target)
+    except ValueError:
+        targetIdx = targetList.index(f"{target.split('_')[0]}_")
 
-    if target == 'start':
-        return getTestKeyboardFab(builder, TESTS_CONFIG)
+    if targetIdx != -1 and (all(c in args for c in BUTTONS_CONFIG[targetIdx]["conditions"]) if "conditions" in BUTTONS_CONFIG[targetIdx] and len(BUTTONS_CONFIG[targetIdx]["conditions"]) != 0 else True):
+        if "message_actions" in BUTTONS_CONFIG and len(BUTTONS_CONFIG[targetIdx]["message_actions"]) != 0 and "message" in args and args["message"]:
+            for a in BUTTONS_CONFIG["message_actions"]:
+                args["message"][a]()
 
-    if target == 'reminder':        
-        builder.add(
-            InlineKeyboardButton(
-                text="Ежедневно",
-                callback_data="every_day"
-            ),
-            InlineKeyboardButton(
-                text="Каждую неделю",
-                callback_data="every_week"
-            ),
-            InlineKeyboardButton(
-                text="2 раза в месяц",
-                callback_data="every_2weeks"
-            ),
-            InlineKeyboardButton(
-                text="Каждый месяц",
-                callback_data="every_month"
-            )
-        )
-        
-        if 'hasReminders' in args and args['hasReminders']:
+        for b in BUTTONS_CONFIG[targetIdx]["buttons"]:
+            if b["condition"] not in args or not args[b["condition"]] if "condition" in b else False:
+                continue
             builder.add(
                 InlineKeyboardButton(
-                    text="Удалить",
-                    callback_data="removeReminder"
+                    text=b["text"],
+                    callback_data=b["callback_data"]
                 )
             )
-
-        builder.add(
-            InlineKeyboardButton(
-                text="Выход",
-                callback_data="exit_full"
-            )
-        )
-        
-        builder.adjust(2)
-        return builder.as_markup()
-
-    if target.startswith('removeReminder') and 'reminders' in args:
-        return getRemindersKeyboardFab(builder, args['reminders'])
-    
-    if target == 'stat':
-        builder.add(
-            InlineKeyboardButton(
-                text="Выход",
-                callback_data="exit_fullPhoto"
-            )
-        )
-        return builder.as_markup()
-
-    if target == 'exit_full':
-        builder.add(
-            InlineKeyboardButton(
-                text="Выбрать тест",
-                callback_data="start"
-            ),
-            InlineKeyboardButton(
-                text="Статистика",
-                callback_data="stat"
-            ),
-            InlineKeyboardButton(
-                text = "Напоминания",
-                callback_data="reminder"
-            )
-        )
-        builder.adjust(2)
-        return builder.as_markup()
-
-    if target == 'exit_photo' or target == 'exit_fullPhoto':
-        builder.add(
-            InlineKeyboardButton(
-                text="Выбрать тест",
-                callback_data="start"
-            ),
-            InlineKeyboardButton(
-                text = "Напоминания",
-                callback_data="reminder"
-            )
-        )
-        builder.adjust(2)
-        return builder.as_markup()
-
-    if target.startswith('next_') and 'isEnd' in args:
-        if 'message' in args:
-            args['message'].delete_reply_markup()
             
-        builder.add(
-            InlineKeyboardButton(
-                text="Выход",
-                callback_data="exit_photo"
+        builder.adjust(BUTTONS_CONFIG[targetIdx]["adjust"])
+        
+    elif any(target.startswith(k) for k in targetList.index(target)):
+        if 'message' in args:
+            return args['message'].reply_markup
+        
+    else:
+            builder.add(
+                InlineKeyboardButton(
+                    text="Продолжить",
+                    callback_data="next_0"
+                )
             )
-        )
-        return builder.as_markup()
-
-    if target.startswith('next_') and "currentQuestion" in args and "currentTest" in args:
-        return getAnswersKeyboardFab(builder, len(args['currentTest']['content']['questions'][args['currentQuestion']]))
-
-    builder.add(
-        InlineKeyboardButton(
-            text="Продолжить",
-            callback_data="next_0"
-        )
-    )
-    builder.add(
-        InlineKeyboardButton(
-            text="Выход",
-            callback_data="exit_full"
-        )
-    )
+            builder.add(
+                InlineKeyboardButton(
+                    text="Выход",
+                    callback_data="exit_full"
+                )
+            )
+            
+        
     return builder.as_markup()

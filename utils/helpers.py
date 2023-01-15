@@ -135,7 +135,6 @@ def workInParallel(*funcs: List[Callable[[Any], Any]], args: Dict[str, List[Any]
     return results
 
 def insertUnfinishedResults(globalsIdx: int, user: User, data: TResultData):
-    print("hello")
     try:
         insertUnfinished({"datetime": datetime.now(),
                    "userId": globalsList[globalsIdx].currentUser, "chat_id": user.id, "data": data})

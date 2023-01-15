@@ -1,5 +1,4 @@
-from typing import Union
-from aiogram.types import InlineKeyboardMarkup, CallbackQuery,  Message
+from aiogram.types import InlineKeyboardMarkup,  Message
 from init.globals import globalsList
 
 async def clearStartMessage(globalsIdx: int):    

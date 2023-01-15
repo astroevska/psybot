@@ -2,14 +2,15 @@ from typing import List
 from dateutil import parser
 from functools import reduce
 from datetime import datetime
-from threading import Thread, Timer
-from aiogram.types import CallbackQuery
+from threading import Timer
 from aiogram.methods import AnswerCallbackQuery
+from aiogram.types import CallbackQuery, Message
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from utils.plot import getPlotImg
 from db.insert import insertResult
 from init.globals import globalsList
-from utils.bot.keyboard import getButtons
+from utils.bot.keyboard import getButtons, getAnswersKeyboardFab
 from utils.globals import getOrSetCurrentGlobal
 from utils.bot.message import clearStartMessage, changeMessage
 from utils.helpers import getTag, getResult, clearTestData, getHelpMessage, insertUnfinishedResults
@@ -17,19 +18,22 @@ from utils.helpers import getTag, getResult, clearTestData, getHelpMessage, inse
 
 async def handleFirstQuestion(callback: CallbackQuery) -> AnswerCallbackQuery:
     globalsIdx = await getOrSetCurrentGlobal(callback.from_user)
+    builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
+    tag = getTag(callback.data)
+
+    await callback.message.delete_reply_markup()
 
     try:
-        await changeMessage(
-            callback.message,
+        await callback.message.answer(
             "\n".join([f"<b>{i})</b> {x}" for i, x in enumerate(globalsList[globalsIdx].currentTest['content']
                     ['questions'][globalsList[globalsIdx].currentQuestion])]),
-            markup=getButtons(
-                callback.data, currentQuestion=globalsList[globalsIdx].currentQuestion, currentTest=globalsList[globalsIdx].currentTest)
-        )
+            reply_markup=getAnswersKeyboardFab(builder, len(globalsList[globalsIdx].currentTest['content']
+                    ['questions'][globalsList[globalsIdx].currentQuestion])))
+
     except Exception as e:
         print(e)
 
-    globalsList[globalsIdx].data[globalsList[globalsIdx].currentTest['name']]: List = [int(getTag(callback.data))]
+    globalsList[globalsIdx].data[globalsList[globalsIdx].currentTest['name']]: List = int(tag) if tag else []
     globalsList[globalsIdx].test_timeout = Timer(
         10, insertUnfinishedResults, args=[globalsIdx, callback.from_user, globalsList[globalsIdx].data[globalsList[globalsIdx].currentTest['name']]])
     globalsList[globalsIdx].test_timeout.start()
@@ -53,8 +57,10 @@ async def handleLastQuestion(callback: CallbackQuery) -> AnswerCallbackQuery:
     await callback.message.answer_photo(
         plot,
         f"{text}\n\n{getHelpMessage()}" if globalsList[globalsIdx].resultIndex > 1 else text,
-        reply_markup=getButtons(callback.data, isEnd=True, message=callback.message)
+        reply_markup=getButtons('testStat', isEnd=True)
     )
+
+    callback.message.delete()
 
     try:
         insertResult({
@@ -87,3 +93,12 @@ async def remindersHandler(callback: CallbackQuery, userReminders: list, conditi
         )
 
     return await callback.answer()
+
+
+async def startBot(message: Message):
+    await getOrSetCurrentGlobal(message.from_user)
+
+    await message.reply(
+        f"Привет, {message.from_user.first_name}!\n\nНе секрет, что многие разработчики сталкиваются с выгоранием, тревогой и депрессией. Этот бот призван помочь вам отслеживать свое психологическое состояние и предлагает несколько психологических тестов. Бот будет сохранять ваши результаты, и вы сможете отслеживать динамику изменения своего состояния на длительных промежутках. Это поможет вам вовремя заметить ухудшение или понять, какие факторы идут вам на пользу, а какие во вред.",
+        reply_markup=getButtons('init')
+    )

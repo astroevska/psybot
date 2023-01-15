@@ -9,7 +9,7 @@ from aiogram.types import User
 from collections.abc import Iterable, ItemsView
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
-from db.insert import insertUnfinished
+from db.update import updateUnfinished
 from init.globals import globalsList
 from constants.data import TESTS_CONFIG
 from utils.globals import getOrSetCurrentGlobal
@@ -134,10 +134,19 @@ def workInParallel(*funcs: List[Callable[[Any], Any]], args: Dict[str, List[Any]
 
     return results
 
-def insertUnfinishedResults(globalsIdx: int, user: User, data: TResultData):
+def saveUnfinishedResults(globalsIdx: int, user: User, data: TResultData):
     try:
-        insertUnfinished({"datetime": datetime.now(),
-                   "userId": globalsList[globalsIdx].currentUser, "chat_id": user.id, "data": data})
+        updateUnfinished({
+            "$set": {
+                "datetime": datetime.now(),
+                "userId": globalsList[globalsIdx].currentUser, 
+                "chat_id": user.id, 
+                "data": data
+            }
+        }, {
+            "chat_id": user.id,
+            "test_name": globalsList[globalsIdx].currentTest["name"]
+        })
     except Exception as e:
         print(e)
 

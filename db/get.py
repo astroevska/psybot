@@ -18,3 +18,6 @@ def getUser(filters: Dict[str, Any] = {}) -> Cursor:
 
 def getReminders(filters: Dict[str, Any] = {}) -> Cursor:
     return get_database()["reminders"].find(filters)
+
+def getUnfinished(filters: Dict[str, Any] = {}) -> Cursor:
+    return get_database()["unfinished_tests"].find_one(filters)

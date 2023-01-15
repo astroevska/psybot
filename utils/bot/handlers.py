@@ -9,11 +9,12 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from utils.plot import getPlotImg
 from db.insert import insertResult
+from db.remove import removeUnfinished 
 from init.globals import globalsList
 from utils.bot.keyboard import getButtons, getAnswersKeyboardFab
 from utils.globals import getOrSetCurrentGlobal
 from utils.bot.message import clearStartMessage, changeMessage
-from utils.helpers import getTag, getResult, clearTestData, getHelpMessage, insertUnfinishedResults
+from utils.helpers import getTag, getResult, clearTestData, getHelpMessage, saveUnfinishedResults
 
 
 async def handleFirstQuestion(callback: CallbackQuery) -> AnswerCallbackQuery:
@@ -35,7 +36,7 @@ async def handleFirstQuestion(callback: CallbackQuery) -> AnswerCallbackQuery:
 
     globalsList[globalsIdx].data[globalsList[globalsIdx].currentTest['name']]: List = int(tag) if tag else []
     globalsList[globalsIdx].test_timeout = Timer(
-        10, insertUnfinishedResults, args=[globalsIdx, callback.from_user, globalsList[globalsIdx].data[globalsList[globalsIdx].currentTest['name']]])
+        10, saveUnfinishedResults, args=[globalsIdx, callback.from_user, globalsList[globalsIdx].data[globalsList[globalsIdx].currentTest['name']]])
     globalsList[globalsIdx].test_timeout.start()
     
     globalsList[globalsIdx].currentStartMessage = callback.message
@@ -68,6 +69,14 @@ async def handleLastQuestion(callback: CallbackQuery) -> AnswerCallbackQuery:
             "test_name": globalsList[globalsIdx].currentTest["name"],
             "result": globalsList[globalsIdx].result,
             "date": parser.parse(str(datetime.now()))
+        })
+    except Exception as e:
+        print(e)
+
+    try: 
+        removeUnfinished({
+            "chat_id": callback.from_user.id,
+            "test_name": globalsList[globalsIdx].currentTest["name"]
         })
     except Exception as e:
         print(e)

@@ -1,17 +1,14 @@
-from datetime import datetime
-from aiogram.types import User, InlineKeyboardMarkup,  Message
+from aiogram.types import InlineKeyboardMarkup,  Message
 
 from init.globals import globalsList
-from db.update import updateUnfinished
 from constants.data import TESTS_CONFIG
-from constants.types import TResultData
-from utils.globals import getOrSetCurrentGlobal
 
 
-async def clearStartMessage(globalsIdx: int):    
-    await globalsList[globalsIdx].currentStartMessage.delete()
-    
-    globalsList[globalsIdx].currentStartMessage = None
+async def clearStartMessage(globalsIdx: int):
+    if globalsList[globalsIdx].currentStartMessage:
+        await globalsList[globalsIdx].currentStartMessage.delete()
+        
+        globalsList[globalsIdx].currentStartMessage = None
 
 
 async def changeMessage(message: Message, text: str, markup: InlineKeyboardMarkup, photo = None):
@@ -34,29 +31,16 @@ def getHelpMessage() -> str:
     return "Ваше состояние вызывает озабоченность. Вам стоит продолжить за ним наблюдать, а также по возможности обратиться к специалисту."
 
 
-def saveUnfinishedResults(globalsIdx: int, user: User, data: TResultData):
-    try:
-        updateUnfinished({
-            "$set": {
-                "datetime": datetime.now(),
-                "userId": globalsList[globalsIdx].currentUser, 
-                "chat_id": user.id, 
-                "data": data
-            }
-        }, {
-            "chat_id": user.id,
-            "test_id": globalsList[globalsIdx].currentTest["_id"]
-        })
-    except Exception as e:
-        print(e)
+def getReminderPeriodName(reminder_type: str) -> str:
+    text = "Вы установили напоминание "
 
-    globalsList[globalsIdx].test_timeout.cancel()
-    globalsList[globalsIdx].test_timeout = None
+    if reminder_type == 'day':
+        text += "на каждый день"
+    elif reminder_type == 'week':
+        text += "на каждую неделю"
+    elif reminder_type == '2weeks':
+        text += "два раза в месяц"
+    elif reminder_type == 'month':
+        text += "раз в месяц"
 
-
-async def clearTestData(user: User):
-    globalsIdx = await getOrSetCurrentGlobal(user)
-
-    globalsList[globalsIdx].data[globalsList[globalsIdx].currentTest['_id']] = []
-    globalsList[globalsIdx].currentQuestion = 0
-    globalsList[globalsIdx].test_timeout = None
+    return text

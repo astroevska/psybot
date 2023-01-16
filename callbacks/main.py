@@ -4,9 +4,9 @@ from aiogram.types import InlineKeyboardMarkup, Message, CallbackQuery
 
 from utils.helpers import getTag
 from init.globals import globalsList
-from utils.globals import getOrSetCurrentGlobal
 from utils.bot.keyboard import getButtons, getTestKeyboardFab
-from utils.bot.helpers import changeMessage, clearStartMessage, getStartMessage, clearTestData
+from utils.bot.globals import getOrSetCurrentGlobal, clearTestData
+from utils.bot.helpers import changeMessage, clearStartMessage, getStartMessage
 
 
 async def startBot(message: Message):

@@ -11,9 +11,9 @@ from db.insert import insertReminder
 from utils.helpers import getTag
 from init.globals import globalsList
 from utils.datetime import nextDateByPeriod
-from utils.bot.helpers import changeMessage
 from utils.bot.handlers import remindersHandler
-from utils.globals import getOrSetCurrentGlobal
+from utils.bot.globals import getOrSetCurrentGlobal
+from utils.bot.helpers import changeMessage, getReminderPeriodName
 from utils.bot.keyboard import getButtons, getRemindersKeyboardFab
 
 
@@ -67,16 +67,7 @@ async def setReminder(callback: CallbackQuery) -> AnswerCallbackQuery:
         print(e)
 
     markup = getButtons("init")
-    text = "Вы установили напоминание "
-
-    if reminder_type == 'day':
-        text += "на каждый день"
-    elif reminder_type == 'week':
-        text += "на каждую неделю"
-    elif reminder_type == '2weeks':
-        text += "два раза в месяц"
-    elif reminder_type == 'month':
-        text += "раз в месяц"
+    text = getReminderPeriodName(reminder_type)
 
     await changeMessage(
         callback.message,

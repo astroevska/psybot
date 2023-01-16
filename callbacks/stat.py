@@ -4,9 +4,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from utils.helpers import getTag
 from utils.plot import getPlotImg
-from init.globals import globalsList
-from constants.data import TESTS_CONFIG
-from utils.globals import getOrSetCurrentGlobal
+from utils.bot.globals import getOrSetCurrentGlobal, setTest
 from utils.bot.helpers import changeMessage, getStartMessage
 from utils.bot.keyboard import getButtons, getTestKeyboardFab
 
@@ -25,10 +23,8 @@ async def getStatTest(callback: CallbackQuery):
 
 async def getStatistics(callback: CallbackQuery) -> AnswerCallbackQuery:
     globalsIdx = await getOrSetCurrentGlobal(callback.from_user)
-    tag = getTag(callback.data)
 
-    if tag:
-        globalsList[globalsIdx].currentTest = TESTS_CONFIG[int(tag)]
+    setTest(globalsIdx, getTag(callback.data))
 
     plot = await getPlotImg(callback.from_user, False)
     await callback.message.answer_photo(

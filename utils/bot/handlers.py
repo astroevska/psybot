@@ -1,20 +1,19 @@
 from typing import List
 from dateutil import parser
-from threading import Timer
 from functools import reduce
 from datetime import datetime
 from aiogram.methods import AnswerCallbackQuery
 from aiogram.types import CallbackQuery, Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+from utils.helpers import getTag
 from utils.plot import getPlotImg
 from db.insert import insertResult
 from init.globals import globalsList
 from db.remove import removeUnfinished
-from utils.helpers import getTag, getResult
-from utils.globals import getOrSetCurrentGlobal
 from utils.bot.keyboard import getButtons, getAnswersKeyboardFab
-from utils.bot.helpers import clearStartMessage, changeMessage, clearTestData, getHelpMessage, saveUnfinishedResults
+from utils.bot.helpers import clearStartMessage, changeMessage, getHelpMessage
+from utils.bot.globals import appendAnswer, getOrSetCurrentGlobal, clearTestData, clearUnfinishedTimeout, setResult, startUnfinishedTimeout
 
 
 async def handleFirstQuestion(callback: CallbackQuery) -> AnswerCallbackQuery:
@@ -35,9 +34,7 @@ async def handleFirstQuestion(callback: CallbackQuery) -> AnswerCallbackQuery:
         print(e)
 
     globalsList[globalsIdx].data[globalsList[globalsIdx].currentTest['_id']]: List = int(tag) if tag else []
-    globalsList[globalsIdx].test_timeout = Timer(
-        10, saveUnfinishedResults, args=[globalsIdx, callback.from_user, globalsList[globalsIdx].data[globalsList[globalsIdx].currentTest['_id']]])
-    globalsList[globalsIdx].test_timeout.start()
+    startUnfinishedTimeout(globalsIdx, callback.from_user)
     
     globalsList[globalsIdx].currentStartMessage = callback.message
     globalsList[globalsIdx].currentQuestion += 1
@@ -47,13 +44,14 @@ async def handleFirstQuestion(callback: CallbackQuery) -> AnswerCallbackQuery:
 
 async def handleLastQuestion(callback: CallbackQuery) -> AnswerCallbackQuery:
     globalsIdx = await getOrSetCurrentGlobal(callback.from_user)
-    globalsList[globalsIdx].data[globalsList[globalsIdx].currentTest['_id']].append(int(getTag(callback.data)))
-    globalsList[globalsIdx].result = sum(globalsList[globalsIdx].data[globalsList[globalsIdx].currentTest['_id']])
-    globalsList[globalsIdx].resultIndex = getResult(
-        globalsList[globalsIdx].currentTest['content']['interpretor'], globalsList[globalsIdx].result)
+    
+    appendAnswer(globalsIdx, getTag(callback.data))
+    setResult(globalsIdx)
     
     text: str = f"Вы прошли тест. Ваш результат: <b>{globalsList[globalsIdx].result} баллов</b>.\nПо шкале Бека он соответствует следующему состоянию: <b>{globalsList[globalsIdx].currentTest['content']['interpretor'][globalsList[globalsIdx].resultIndex][2]}</b>.\n\n{globalsList[globalsIdx].currentTest['content']['interpretor'][globalsList[globalsIdx].resultIndex][3]}"
-    plot = await getPlotImg(callback.from_user, True)    
+    plot = await getPlotImg(callback.from_user, True)
+    
+    clearUnfinishedTimeout(globalsIdx)
 
     await callback.message.answer_photo(
         plot,
@@ -82,10 +80,9 @@ async def handleLastQuestion(callback: CallbackQuery) -> AnswerCallbackQuery:
     except Exception as e:
         print(e)
         
-    if globalsList[globalsIdx].currentStartMessage:
-        await clearStartMessage(globalsIdx)
-
+    await clearStartMessage(globalsIdx)
     await clearTestData(callback.from_user)
+    
     return await callback.answer()
 
 

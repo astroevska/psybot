@@ -2,9 +2,7 @@ from aiogram.methods import AnswerCallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import InlineKeyboardMarkup, Message, CallbackQuery
 
-from utils.plot import getPlotImg
 from init.globals import globalsList
-from constants.data import TESTS_CONFIG
 from utils.globals import getOrSetCurrentGlobal
 from utils.bot.keyboard import getButtons, getTestKeyboardFab
 from utils.bot.message import changeMessage, clearStartMessage
@@ -26,22 +24,8 @@ async def start(callback: CallbackQuery):
     await changeMessage(
         callback.message,
         getStartMessage(),
-        markup=getTestKeyboardFab(builder)
+        markup=getTestKeyboardFab(builder, 'test', 'exit_full')
     )
-
-    await callback.answer()
-
-
-async def getStatistics(callback: CallbackQuery) -> AnswerCallbackQuery:
-    plot = await getPlotImg(callback.from_user, False)
-
-    await callback.message.answer_photo(
-        plot,
-        "Динамика вашего психологического состояния.",
-        reply_markup=getButtons(callback.data),
-    )
-
-    await callback.message.delete()
 
     await callback.answer()
 

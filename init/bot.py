@@ -5,9 +5,10 @@ from aiogram.filters import Text, Command
 
 from constants.config import API_TOKEN
 from constants.types import TSendMessage
-from utils.bot.callbacks.test import chooseTest, setAnswer
-from utils.bot.callbacks.main import getStatistics, handleExit, start, startBot
-from utils.bot.callbacks.reminder import deleteReminder, setReminder, showReminders
+from callbacks.test import chooseTest, setAnswer
+from callbacks.stat import getStatTest, getStatistics
+from callbacks.main import handleExit, start, startBot
+from callbacks.reminder import deleteReminder, setReminder, showReminders
 
 
 logging.basicConfig(level=logging.INFO)
@@ -21,9 +22,10 @@ async def sendMessage(data: TSendMessage):
 
 
 # bot callbacks
-dp.callback_query(Text(text="start"))(start)
 dp.message(Command(commands=['start']))(startBot)
-dp.callback_query(Text(text="stat"))(getStatistics)
+dp.callback_query(Text(text="start"))(start)
+dp.callback_query(Text(text="statTests"))(getStatTest)
+dp.callback_query(Text(startswith="stat"))(getStatistics)
 dp.callback_query(Text(startswith="exit_"))(handleExit)
 
 dp.callback_query(Text(text='reminder'))(showReminders)

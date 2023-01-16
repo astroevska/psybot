@@ -9,6 +9,7 @@ from typing import Any, Dict, List, Literal, NewType, TypeVar, TypedDict, Union,
 
 # simple types
 TResultDF = type(List[int])
+TDBFilters = Dict[str, Any]
 TQuestion = NewType('TQuestion', List[str])
 TResultData = NewType('TResultData', Dict[str, List[int]])
 TInterpretor = NewType('TInterpretor', List[Union[int, str]])

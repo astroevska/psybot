@@ -1,6 +1,5 @@
-from constants.types import TResult, TTest, TUser, TReminder, TUnfinishedTest
-
 from db.main import get_database
+from constants.types import TResult, TTest, TUser, TReminder, TUnfinishedTest
 
 
 def insertTest(data: TTest):

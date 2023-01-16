@@ -6,31 +6,31 @@ from utils.globals import getKeyList
 from constants.data import TESTS_CONFIG, BUTTONS_CONFIG
 
 
-def getTestKeyboardFab(builder: InlineKeyboardBuilder) -> InlineKeyboardMarkup:
+def getTestKeyboardFab(builder: InlineKeyboardBuilder, prefix: str, exitKey: str) -> InlineKeyboardMarkup:
     for i in range(len(TESTS_CONFIG)):
         builder.add(
             InlineKeyboardButton(
                 text=TESTS_CONFIG[i]['name'],
-                callback_data=f"test_{i}"
+                callback_data=f"{prefix}_{i}"
             )
         )
 
     builder.add(
         InlineKeyboardButton(
             text="Выход",
-            callback_data="exit_full"
+            callback_data=exitKey
         )
     )
     builder.adjust(2)
     return builder.as_markup()
 
 
-def getAnswersKeyboardFab(builder: InlineKeyboardBuilder, length: int) -> InlineKeyboardMarkup:
+def getAnswersKeyboardFab(builder: InlineKeyboardBuilder, length: int, prefix: str = 'next') -> InlineKeyboardMarkup:
     for i in range(length):
         builder.add(
             InlineKeyboardButton(
                 text=str(i),
-                callback_data=f"next_{i}"
+                callback_data=f"{prefix}_{i}"
             )
         )
 
@@ -68,6 +68,8 @@ def getRemindersKeyboardFab(builder: InlineKeyboardBuilder, reminders: list) -> 
 def getButtons(target: str, **args: Any) -> InlineKeyboardMarkup:
     builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
     targetList = getKeyList(BUTTONS_CONFIG, "name")
+
+    print(target)
 
     try:
         targetIdx = targetList.index(target)

@@ -1,14 +1,12 @@
-from typing import List, Any
 from aiogram.types import User
 
 from db.get import getUser
 from db.insert import insertUser
-from constants.data import TESTS_CONFIG
 from init.globals import globalsList
 from constants.types import TGlobals
+from utils.helpers import getKeyList
+from constants.data import TESTS_CONFIG
 
-def getKeyList(array: List[Any], value: str):
-    return list(map(lambda x: x[value], array))
 
 def addNewGlobal() -> TGlobals:
     return TGlobals(**{

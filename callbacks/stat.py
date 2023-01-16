@@ -2,18 +2,17 @@ from aiogram.types import CallbackQuery
 from aiogram.methods import AnswerCallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+from utils.helpers import getTag
 from utils.plot import getPlotImg
 from init.globals import globalsList
 from constants.data import TESTS_CONFIG
-from utils.bot.message import changeMessage
 from utils.globals import getOrSetCurrentGlobal
-from utils.helpers import getStartMessage, getTag
+from utils.bot.helpers import changeMessage, getStartMessage
 from utils.bot.keyboard import getButtons, getTestKeyboardFab
 
 
 async def getStatTest(callback: CallbackQuery):
     builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
-    print(callback.data)
     
     await changeMessage(
         callback.message,

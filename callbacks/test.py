@@ -3,14 +3,14 @@ from aiogram.types import CallbackQuery
 from aiogram.methods import AnswerCallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+from utils.helpers import getTag
 from db.get import getUnfinished
 from init.globals import globalsList
 from constants.data import TESTS_CONFIG
-from utils.bot.message import changeMessage
 from utils.globals import getOrSetCurrentGlobal
 from utils.bot.keyboard import getButtons, getAnswersKeyboardFab
 from utils.bot.handlers import handleFirstQuestion, handleLastQuestion
-from utils.helpers import getTag, saveUnfinishedResults, clearTestData
+from utils.bot.helpers import changeMessage, saveUnfinishedResults, clearTestData
 
 
 async def chooseTest(callback: CallbackQuery) -> AnswerCallbackQuery:
@@ -32,11 +32,11 @@ async def setAnswer(callback: CallbackQuery) -> AnswerCallbackQuery:
     globalsIdx = await getOrSetCurrentGlobal(callback.from_user)
     tag = getTag(callback.data)
 
-    if globalsList[globalsIdx].currentTest['name'] not in globalsList[globalsIdx].data:
-            unfinishedResult = getUnfinished({"chat_id": callback.from_user.id, "test_name": globalsList[globalsIdx].currentTest["name"]})
+    if globalsList[globalsIdx].currentTest['_id'] not in globalsList[globalsIdx].data:
+            unfinishedResult = getUnfinished({"chat_id": callback.from_user.id, "test_id": globalsList[globalsIdx].currentTest["_id"]})
 
             if unfinishedResult:
-                globalsList[globalsIdx].data[globalsList[globalsIdx].currentTest['name']] = unfinishedResult['data']
+                globalsList[globalsIdx].data[globalsList[globalsIdx].currentTest['_id']] = unfinishedResult['data']
                 globalsList[globalsIdx].currentQuestion = len(unfinishedResult['data']) - 1
 
     if globalsList[globalsIdx].test_timeout:
@@ -49,10 +49,10 @@ async def setAnswer(callback: CallbackQuery) -> AnswerCallbackQuery:
         return await handleLastQuestion(callback)
 
     if tag:
-        globalsList[globalsIdx].data[globalsList[globalsIdx].currentTest['name']].append(int(tag))
+        globalsList[globalsIdx].data[globalsList[globalsIdx].currentTest['_id']].append(int(tag))
 
     globalsList[globalsIdx].test_timeout = Timer(
-        10, saveUnfinishedResults, args=[globalsIdx, callback.from_user, globalsList[globalsIdx].data[globalsList[globalsIdx].currentTest['name']]])
+        10, saveUnfinishedResults, args=[globalsIdx, callback.from_user, globalsList[globalsIdx].data[globalsList[globalsIdx].currentTest['_id']]])
     globalsList[globalsIdx].test_timeout.start()
 
     try:

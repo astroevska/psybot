@@ -1,8 +1,8 @@
-from typing import List, Any
+from typing import Any
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from utils.globals import getKeyList
+from utils.helpers import getKeyList
 from constants.data import TESTS_CONFIG, BUTTONS_CONFIG
 
 
@@ -69,8 +69,6 @@ def getButtons(target: str, **args: Any) -> InlineKeyboardMarkup:
     builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
     targetList = getKeyList(BUTTONS_CONFIG, "name")
 
-    print(target)
-
     try:
         targetIdx = targetList.index(target)
     except ValueError:
@@ -92,24 +90,8 @@ def getButtons(target: str, **args: Any) -> InlineKeyboardMarkup:
             )
             
         builder.adjust(BUTTONS_CONFIG[targetIdx]["adjust"])
-        
-    elif any(target.startswith(k) for k in targetList.index(target)):
-        if 'message' in args:
-            return args['message'].reply_markup
-        
+
     else:
-            builder.add(
-                InlineKeyboardButton(
-                    text="Продолжить",
-                    callback_data="next_0"
-                )
-            )
-            builder.add(
-                InlineKeyboardButton(
-                    text="Выход",
-                    callback_data="exit_full"
-                )
-            )
-            
+        return getButtons('init')
         
     return builder.as_markup()

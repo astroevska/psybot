@@ -2,18 +2,18 @@ import io
 import seaborn as sns
 import matplotlib.dates as mdates
 
+from pymongo import DESCENDING
 from matplotlib import axes, figure
 from matplotlib.patches import Patch
-from aiogram.types import BufferedInputFile, User
 from typing import Any, Optional, List, Set
-from pymongo import DESCENDING
+from aiogram.types import BufferedInputFile, User
 
 from db.get import getResults
 from init.globals import globalsList
-from utils.globals import getOrSetCurrentGlobal
 from utils.helpers import get2dPlotData
-from constants.config import LEGEND_POSITION_Y
 from constants.types import TInterpretor
+from constants.config import LEGEND_POSITION_Y
+from utils.globals import getOrSetCurrentGlobal
 
 
 def setPlotResponsibleAxesX(ax: axes):

@@ -11,7 +11,7 @@ from db.insert import insertReminder
 from utils.helpers import getTag
 from init.globals import globalsList
 from utils.datetime import nextDateByPeriod
-from utils.bot.message import changeMessage
+from utils.bot.helpers import changeMessage
 from utils.bot.handlers import remindersHandler
 from utils.globals import getOrSetCurrentGlobal
 from utils.bot.keyboard import getButtons, getRemindersKeyboardFab
@@ -57,7 +57,7 @@ async def setReminder(callback: CallbackQuery) -> AnswerCallbackQuery:
     reminder_type = getTag(callback.data)
 
     try:
-        await insertReminder({
+        insertReminder({
             "user_id": globalsList[globalsIdx].currentUser,
             "period": reminder_type,
             "chat_id": callback.from_user.id,

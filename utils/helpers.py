@@ -1,20 +1,19 @@
 import json
 import pandas as pd
 
-from datetime import date, datetime
+from datetime import date
 from bson import json_util
 from functools import reduce
 from threading import Thread
-from aiogram.types import User
 from collections.abc import Iterable, ItemsView
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
-from db.update import updateUnfinished
-from init.globals import globalsList
-from constants.data import TESTS_CONFIG
-from utils.globals import getOrSetCurrentGlobal
 from utils.datetime import datetimeToDateStr, strToDate
-from constants.types import T2dPlotDF, T2dPlotData, TPlotSupportedDataTypes, TInterpretor, TResultData
+from constants.types import T2dPlotDF, T2dPlotData, TPlotSupportedDataTypes, TInterpretor
+
+
+def getKeyList(array: List[Any], value: str):
+    return list(map(lambda x: x[value], array))
 
 
 # Telegram Bot data helpers
@@ -23,31 +22,10 @@ def getTag(callbackData: str) -> Union[str, bool]:
     return splitted[1] if len(splitted) > 1 else False
 
 
-def getStartMessage() -> str:
-    startText = f"На данный момент в боте доступны следующие тесты:\n\n"
-    for i in range(len(TESTS_CONFIG)):
-        startText += f"<b>{i + 1}. {TESTS_CONFIG[i]['name']}</b>\n"
-
-    startText += "\nВы можете выбрать любой из них, пройти его, а в дальнейшем отслеживать динамику изменений своего психологического состояния. Тесты постоянно дополняются."
-    return startText
-
-
-def getHelpMessage() -> str:
-    return "Ваше состояние вызывает озабоченность. Вам стоит продолжить за ним наблюдать, а также по возможности обратиться к специалисту."
-
-
 def getResult(interpretor: List[TInterpretor], result: int) -> int:
     for i in range(len(interpretor)):
         if result >= interpretor[i][0] and result <= interpretor[i][1]:
             return i
-
-
-async def clearTestData(user: User):
-    globalsIdx = await getOrSetCurrentGlobal(user)
-
-    globalsList[globalsIdx].data[globalsList[globalsIdx].currentTest['name']] = []
-    globalsList[globalsIdx].currentQuestion = 0
-    globalsList[globalsIdx].test_timeout = None
 
 
 # Abstract helpers
@@ -123,6 +101,7 @@ def get2dPlotData(dbGetter: Callable, dbSearchConfig: Dict[str, Union[str, int]]
 def json_serialize(data):
     return str(json.dumps(data, ensure_ascii=False, indent=2, default=json_util.default)).encode().decode('utf-8')
 
+
 def workInParallel(*funcs: List[Callable[[Any], Any]], args: Dict[str, List[Any]]):
     results = []
     for f in funcs:
@@ -133,22 +112,3 @@ def workInParallel(*funcs: List[Callable[[Any], Any]], args: Dict[str, List[Any]
         t.join()
 
     return results
-
-def saveUnfinishedResults(globalsIdx: int, user: User, data: TResultData):
-    try:
-        updateUnfinished({
-            "$set": {
-                "datetime": datetime.now(),
-                "userId": globalsList[globalsIdx].currentUser, 
-                "chat_id": user.id, 
-                "data": data
-            }
-        }, {
-            "chat_id": user.id,
-            "test_name": globalsList[globalsIdx].currentTest["name"]
-        })
-    except Exception as e:
-        print(e)
-
-    globalsList[globalsIdx].test_timeout.cancel()
-    globalsList[globalsIdx].test_timeout = None

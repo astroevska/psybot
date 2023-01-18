@@ -1,4 +1,5 @@
 import json
+import math
 import pandas as pd
 
 from datetime import date
@@ -107,8 +108,47 @@ def workInParallel(*funcs: List[Callable[[Any], Any]], args: Dict[str, List[Any]
     for f in funcs:
         t = Thread(target=f, args=args[f.__name__])
         results.append(t)
-        
+
         t.start()
         t.join()
 
     return results
+
+
+def numberToEmoji(i: int) -> str:
+    if i == 0:
+        return "0️⃣"
+    elif i == 1:
+        return "1️⃣"
+    elif i == 2:
+        return "2️⃣"
+    elif i == 3:
+        return "3️⃣"
+    elif i == 4:
+        return "4️⃣"
+    elif i == 5:
+        return "5️⃣"
+    elif i == 6:
+        return "6️⃣"
+    elif i == 7:
+        return "7️⃣"
+    elif i == 8:
+        return "8️⃣"
+    elif i == 9:
+        return "9️⃣"
+    else:
+        return str(i)
+
+
+def integerFraction(i: int, transform: Callable = trivialFunc, sep=""):
+    try:
+        countNumber = int(math.log(i))
+    except:
+        countNumber = 0
+
+    if countNumber > 1:
+        deg = 10**countNumber
+
+        return f"{transform(int(i/deg))}{sep}{integerFraction(i%deg)}{sep}"
+    else:
+        return transform(i)

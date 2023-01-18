@@ -2,8 +2,8 @@ from typing import Any
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from utils.helpers import getKeyList
 from constants.data import TESTS_CONFIG, BUTTONS_CONFIG
+from utils.helpers import getKeyList, integerFraction, numberToEmoji
 
 
 def getTestKeyboardFab(builder: InlineKeyboardBuilder, prefix: str, exitKey: str) -> InlineKeyboardMarkup:
@@ -29,7 +29,7 @@ def getAnswersKeyboardFab(builder: InlineKeyboardBuilder, length: int, prefix: s
     for i in range(length):
         builder.add(
             InlineKeyboardButton(
-                text=str(i),
+                text=integerFraction(i, numberToEmoji),
                 callback_data=f"{prefix}_{i}"
             )
         )
@@ -88,10 +88,10 @@ def getButtons(target: str, **args: Any) -> InlineKeyboardMarkup:
                     callback_data=b["callback_data"]
                 )
             )
-            
+
         builder.adjust(BUTTONS_CONFIG[targetIdx]["adjust"])
 
     else:
         return getButtons('init')
-        
+
     return builder.as_markup()

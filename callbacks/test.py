@@ -1,10 +1,8 @@
-from threading import Timer
 from aiogram.types import CallbackQuery
 from aiogram.methods import AnswerCallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from utils.helpers import getTag
-from db.get import getUnfinished
 from init.globals import globalsList
 from constants.data import TESTS_CONFIG
 from utils.bot.helpers import changeMessage
@@ -15,7 +13,7 @@ from utils.bot.globals import appendAnswer, backToUnfinishedTest, getOrSetCurren
 
 async def chooseTest(callback: CallbackQuery) -> AnswerCallbackQuery:
     globalsIdx = await getOrSetCurrentGlobal(callback.from_user)
-    
+
     await clearTestData(callback.from_user)
     globalsList[globalsIdx].currentTest = TESTS_CONFIG[int(getTag(callback.data))]
 

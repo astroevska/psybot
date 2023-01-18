@@ -1,5 +1,6 @@
 from aiogram.types import CallbackQuery
 from aiogram.methods import AnswerCallbackQuery
+from aiogram.utils import i18n
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from utils.helpers import getTag
@@ -11,7 +12,7 @@ from utils.bot.keyboard import getButtons, getTestKeyboardFab
 
 async def getStatTest(callback: CallbackQuery):
     builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
-    
+
     await changeMessage(
         callback.message,
         getStartMessage(),

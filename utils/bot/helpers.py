@@ -1,4 +1,4 @@
-from aiogram.types import InlineKeyboardMarkup,  Message
+from aiogram.types import InlineKeyboardMarkup, Message
 
 from init.globals import globalsList
 from constants.data import TESTS_CONFIG
@@ -7,7 +7,7 @@ from constants.data import TESTS_CONFIG
 async def clearStartMessage(globalsIdx: int):
     if globalsList[globalsIdx].currentStartMessage:
         await globalsList[globalsIdx].currentStartMessage.delete()
-        
+
         globalsList[globalsIdx].currentStartMessage = None
 
 

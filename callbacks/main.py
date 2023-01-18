@@ -5,7 +5,7 @@ from aiogram.types import InlineKeyboardMarkup, Message, CallbackQuery
 from utils.helpers import getTag
 from init.globals import globalsList
 from utils.bot.keyboard import getButtons, getTestKeyboardFab
-from utils.bot.globals import getOrSetCurrentGlobal, clearTestData
+from utils.bot.globals import clearUnfinishedTimeout, getOrSetCurrentGlobal, clearTestData
 from utils.bot.helpers import changeMessage, clearStartMessage, getStartMessage
 
 
@@ -20,7 +20,7 @@ async def startBot(message: Message):
 
 async def start(callback: CallbackQuery):
     builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
-    
+
     await changeMessage(
         callback.message,
         getStartMessage(),
@@ -38,6 +38,8 @@ async def handleExit(callback: CallbackQuery) -> AnswerCallbackQuery:
     if globalsList[globalsIdx].currentStartMessage and tag != "simple":
         await clearStartMessage(globalsIdx)
         await clearTestData(callback.from_user)
+
+    clearUnfinishedTimeout(globalsIdx)
 
     if tag == 'fullPhoto':
         await callback.message.answer(

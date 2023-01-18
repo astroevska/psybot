@@ -27,11 +27,9 @@ dp.callback_query(Text(text="start"))(start)
 dp.callback_query(Text(text="statTests"))(getStatTest)
 dp.callback_query(Text(startswith="stat"))(getStatistics)
 dp.callback_query(Text(startswith="exit_"))(handleExit)
-
 dp.callback_query(Text(text='reminder'))(showReminders)
 dp.callback_query(Text(startswith='removeReminder'))(deleteReminder)
 dp.callback_query(Text(startswith="every_"))(setReminder)
-
 dp.callback_query(Text(startswith="test_"))(chooseTest)
 dp.callback_query(Text(startswith="next_"))(setAnswer)
 

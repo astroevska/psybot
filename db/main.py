@@ -8,5 +8,6 @@ def get_database() -> MongoClient:
 
     return client['psybot']
 
-if __name__ == "__main__":  
+
+if __name__ == "__main__":
     dbname = get_database()

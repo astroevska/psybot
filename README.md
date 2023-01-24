@@ -1,5 +1,12 @@
 # Telegram Psychological Bot
-A [Telegram](https://telegram.org) bot based on [aiogram](https://github.com/aiogram/aiogram) and [aiohttp](https://github.com/aio-libs/aiohttp) with cloud-based NoSQL-database [MongoDB](https://github.com/mongodb/mongo) implemented through [pymongo](https://github.com/mongodb/mongo-python-driver) package. Also, the bot is written with static typing for self-checking and improving the readability of the code.
+A [Telegram](https://telegram.org) bot based on [aiogram](https://github.com/aiogram/aiogram) and [aiohttp](https://github.com/aio-libs/aiohttp) with cloud-based NoSQL-database [MongoDB](https://github.com/mongodb/mongo) implemented through [pymongo](https://github.com/mongodb/mongo-python-driver) package. The solution has REST API service and is based on asynchronous patterns. Also, the bot is written with static typing for self-checking and improving the readability of the code.
+
+## Features
+- 📝 **Passing tests**
+- ⏰ **Reminders** (bot can remind you to pass a test by your self-defined time)
+- 📊 **Statistics of your results**
+- 🌍 **EN/UA/RU** multilanguage supporting
+- 📡 **Full-provided REST API**
 
 ## Details
 The main mission of the bot - helping people (especially developers) to prevent burnout and depression. The bot allows:
@@ -27,13 +34,16 @@ $ ./init.sh YOUR_TELEGRAM_BOT_TOKEN YOUR_MONGO_DB_CONNECTION_STRING
 ## Goals
 - Deployment (Heroku, Vercel or DigitalOcean).
 - Dockerize the bot (to facilitate deployment).
-- Add a multilingual support. Currently, **EN/RU**.
 - Add more tests (depression, anxiety, burnout and etc).
 - Start to create an IT ecosystem of psychological self-care with the bot as a part of it.
 
 ## References
 - [Aiogram 3 docs](https://docs.aiogram.dev/en/dev-3.x/index.html). This version is used in my project.
 - [Aiogram 2 docs](https://docs.aiogram.dev/en/latest/index.html). I don't use this version here, but the docs of the second version are also useful because of a lot of useful information and advices that is still actual for also the third version.
+- [Aiohttp docs](https://docs.aiohttp.org/en/stable). This library is a core library of **aiogram web server**, and it's also used here for REST API endpoints.
+- [Asyncio](https://docs.python.org/3/library/threading.html) and [threading](https://docs.python.org/3/library/asyncio.html) libraries docs. These libraries are used for:
+  - reminding users;
+  - parallel launching of the bot and the REST API server.
 - [MongoDB docs](https://www.mongodb.com/docs/develop-applications). Full MongoDB docs.
 - [MongoDB Python Start Guide](https://www.mongodb.com/languages/python). Simple instructions about using MongoDB with Python programming language.
 - [MongoDB References](https://www.mongodb.com/docs/manual/reference). References that can help you to work with Mongo API.

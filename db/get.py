@@ -30,3 +30,7 @@ def getUnfinished(filters: TDBFilters = {}) -> Cursor:
 
 def getButtons(filters: TDBFilters = {}) -> Cursor:
     return get_database()["buttons"].find(filters)
+
+
+def getTranslates(filters: TDBFilters = {}) -> Cursor:
+    return get_database()["texts"].find(filters)

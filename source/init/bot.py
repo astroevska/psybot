@@ -3,12 +3,12 @@ from typing import Coroutine
 from aiogram import Bot, Dispatcher
 from aiogram.filters import Text, Command
 
-from constants.config import API_TOKEN
-from constants.types import TSendMessage
-from callbacks.test import chooseTest, setAnswer
-from callbacks.stat import getStatTest, getStatistics
-from callbacks.main import handleExit, start, startBot
-from callbacks.reminder import deleteReminder, setReminder, showReminders
+from ..constants.config import API_TOKEN
+from ..constants.types import TSendMessage
+from ..callbacks.test import chooseTest, setAnswer
+from ..callbacks.stat import getStatTest, getStatistics
+from ..callbacks.main import handleExit, start, startBot
+from ..callbacks.reminder import deleteReminder, setReminder, showReminders
 
 
 logging.basicConfig(level=logging.INFO)

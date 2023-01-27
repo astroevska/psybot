@@ -1,7 +1,7 @@
 from aiogram.types import InlineKeyboardMarkup, Message
 
-from init.globals import globalsList
-from constants.data import TESTS_CONFIG
+from ...init.globals import globalsList
+from ...constants.data import TESTS_CONFIG
 
 
 async def clearStartMessage(globalsIdx: int):

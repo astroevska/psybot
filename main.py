@@ -2,9 +2,9 @@
 import asyncio
 import tracemalloc
 
-from init.bot import main
-from init.server import start_server
-from utils.asynchronous import scheduleCheckReminders
+from source.init.bot import main
+from source.init.server import start_server
+from source.utils.asynchronous import scheduleCheckReminders
 
 
 async def run_tasks():

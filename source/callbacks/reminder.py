@@ -4,17 +4,17 @@ from aiogram.types import CallbackQuery
 from aiogram.methods import AnswerCallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from db.get import getReminders
-from db.remove import removeReminder
-from db.insert import insertReminder
+from ..db.get import getReminders
+from ..db.remove import removeReminder
+from ..db.insert import insertReminder
 
-from utils.helpers import getTag
-from init.globals import globalsList
-from utils.datetime import nextDateByPeriod
-from utils.bot.handlers import remindersHandler
-from utils.bot.globals import getOrSetCurrentGlobal
-from utils.bot.helpers import changeMessage, getReminderPeriodName
-from utils.bot.keyboard import getButtons, getRemindersKeyboardFab
+from ..utils.helpers import getTag
+from ..init.globals import globalsList
+from ..utils.datetime import nextDateByPeriod
+from ..utils.bot.handlers import remindersHandler
+from ..utils.bot.globals import getOrSetCurrentGlobal
+from ..utils.bot.helpers import changeMessage, getReminderPeriodName
+from ..utils.bot.keyboard import getButtons, getRemindersKeyboardFab
 
 
 async def showReminders(callback: CallbackQuery) -> AnswerCallbackQuery:
@@ -42,7 +42,7 @@ async def deleteReminder(callback: CallbackQuery) -> AnswerCallbackQuery:
 
     if hasReminders:
         builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
-        
+
         await changeMessage(
             callback.message,
             callback.message.text if reminder else 'Выберите, какой ремайндер вы хотите удалить.',

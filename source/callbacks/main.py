@@ -2,11 +2,11 @@ from aiogram.methods import AnswerCallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import InlineKeyboardMarkup, Message, CallbackQuery
 
-from utils.helpers import getTag
-from init.globals import globalsList
-from utils.bot.keyboard import getButtons, getTestKeyboardFab
-from utils.bot.globals import clearUnfinishedTimeout, getOrSetCurrentGlobal, clearTestData
-from utils.bot.helpers import changeMessage, clearStartMessage, getStartMessage
+from ..utils.helpers import getTag
+from ..init.globals import globalsList
+from ..utils.bot.keyboard import getButtons, getTestKeyboardFab
+from ..utils.bot.globals import clearUnfinishedTimeout, getOrSetCurrentGlobal, clearTestData
+from ..utils.bot.helpers import changeMessage, clearStartMessage, getStartMessage
 
 
 async def startBot(message: Message):

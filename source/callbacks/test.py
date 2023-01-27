@@ -2,13 +2,13 @@ from aiogram.types import CallbackQuery
 from aiogram.methods import AnswerCallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from utils.helpers import getTag
-from init.globals import globalsList
-from constants.data import TESTS_CONFIG
-from utils.bot.helpers import changeMessage
-from utils.bot.keyboard import getButtons, getAnswersKeyboardFab
-from utils.bot.handlers import handleFirstQuestion, handleLastQuestion
-from utils.bot.globals import appendAnswer, backToUnfinishedTest, getOrSetCurrentGlobal, clearTestData, clearUnfinishedTimeout, startUnfinishedTimeout
+from ..utils.helpers import getTag
+from ..init.globals import globalsList
+from ..constants.data import TESTS_CONFIG
+from ..utils.bot.helpers import changeMessage
+from ..utils.bot.keyboard import getButtons, getAnswersKeyboardFab
+from ..utils.bot.handlers import handleFirstQuestion, handleLastQuestion
+from ..utils.bot.globals import appendAnswer, backToUnfinishedTest, getOrSetCurrentGlobal, clearTestData, clearUnfinishedTimeout, startUnfinishedTimeout
 
 
 async def chooseTest(callback: CallbackQuery) -> AnswerCallbackQuery:

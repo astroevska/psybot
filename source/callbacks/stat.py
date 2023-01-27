@@ -3,11 +3,11 @@ from aiogram.methods import AnswerCallbackQuery
 from aiogram.utils import i18n
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from utils.helpers import getTag
-from utils.plot import getPlotImg
-from utils.bot.globals import getOrSetCurrentGlobal, setTest
-from utils.bot.helpers import changeMessage, getStartMessage
-from utils.bot.keyboard import getButtons, getTestKeyboardFab
+from source.utils.helpers import getTag
+from source.utils.plot import getPlotImg
+from source.utils.bot.globals import getOrSetCurrentGlobal, setTest
+from source.utils.bot.helpers import changeMessage, getStartMessage
+from source.utils.bot.keyboard import getButtons, getTestKeyboardFab
 
 
 async def getStatTest(callback: CallbackQuery):

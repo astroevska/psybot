@@ -1,5 +1,5 @@
-from db.main import get_database
-from constants.types import TDBFilters, TReminder, TTest, TUser, TUnfinishedTest
+from source.db.main import get_database
+from source.constants.types import TDBFilters, TReminder, TTest, TUser, TUnfinishedTest
 
 
 def updateReminder(data: TReminder, filters: TDBFilters = {}):

@@ -2,8 +2,8 @@ from typing import Any
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from constants.data import TESTS_CONFIG, BUTTONS_CONFIG
-from utils.helpers import getKeyList, integerFraction, numberToEmoji
+from source.constants.data import TESTS_CONFIG, BUTTONS_CONFIG
+from source.utils.helpers import getKeyList, integerFraction, numberToEmoji
 
 
 def getTestKeyboardFab(builder: InlineKeyboardBuilder, prefix: str, exitKey: str) -> InlineKeyboardMarkup:

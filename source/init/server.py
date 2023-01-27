@@ -1,10 +1,10 @@
 from aiohttp import web
 
-from init.bot import sendMessage
-from db.update import updateTest, updateUser
-from db.insert import insertResult, insertTest, insertUser
-from utils.server.helpers import getHandlerFactory, postHandlerFactory
-from db.get import getTests, getReminders, getResults, getUsers, getUser
+from source.init.bot import sendMessage
+from source.db.update import updateTest, updateUser
+from source.db.insert import insertResult, insertTest, insertUser
+from source.utils.server.helpers import getHandlerFactory, postHandlerFactory
+from source.db.get import getTests, getReminders, getResults, getUsers, getUser
 
 
 async def start_server():

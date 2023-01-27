@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 
-from constants.config import MONGODB_CONNECTION
+from source.constants.config import MONGODB_CONNECTION
 
 
 def get_database() -> MongoClient:

@@ -1,8 +1,9 @@
-from threading import Thread
 import pandas as pd
+from threading import Thread
+from aiogram.types import Message
+from bson.objectid import ObjectId
 from numpy import datetime64, uint64
 from datetime import date, datetime, time
-from aiogram.types import Message
 from dataclasses import astuple, dataclass
 from typing import Any, Dict, List, Literal, NewType, TypeVar, TypedDict, Union, Optional
 
@@ -46,6 +47,13 @@ class TButtons(TButtonsBase):
     conditions: List[str]
     message_actions: List[Union[Literal["delete_reply_markup"], Literal["delete"]]]
 
+# types for TRANSLATIONS
+class TTranslation(TypedDict):
+    id: ObjectId
+    language: str
+    data: Dict[str, str]
+    buttons: Dict[str, str]
+
 # type for globals
 @dataclass
 class TGlobals:
@@ -61,7 +69,7 @@ class TGlobals:
 
     def __iter__(self):
         return iter(astuple(self))
-    
+
     def __getitem__(self, key):
         return getattr(self, key)
 

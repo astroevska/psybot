@@ -3,14 +3,14 @@ from datetime import datetime
 from aiogram.types import User
 from pymongo import DESCENDING
 
-from source.db.insert import insertUser
-from source.init.globals import globalsList
-from source.db.update import updateUnfinished
-from source.constants.data import TESTS_CONFIG
-from source.utils.helpers import getKeyList, getResult
-from source.constants.types import TGlobals, TResultData
-from source.constants.config import UNFINISHED_SAVE_DELAY
-from source.db.get import getResults, getUnfinished, getUser
+from ...db.insert import insertUser
+from ...init.globals import globalsList
+from ...db.update import updateUnfinished
+from ...constants.data import TESTS_CONFIG
+from ...utils.helpers import getKeyList, getResult
+from ...constants.types import TGlobals, TResultData
+from ...constants.config import UNFINISHED_SAVE_DELAY
+from ...db.get import getResults, getUnfinished, getUser
 
 
 def addNewGlobal() -> TGlobals:

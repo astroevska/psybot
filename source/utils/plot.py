@@ -7,12 +7,12 @@ from matplotlib.patches import Patch
 from typing import Any, Optional, List, Set
 from aiogram.types import BufferedInputFile, User
 
-from source.db.get import getResults
-from source.init.globals import globalsList
-from source.utils.helpers import get2dPlotData
-from source.constants.types import TInterpretor
-from source.constants.config import LEGEND_POSITION_Y
-from source.utils.bot.globals import getOrSetCurrentGlobal, getPreviousResult
+from ..db.get import getResults
+from ..init.globals import globalsList
+from ..utils.helpers import get2dPlotData
+from ..constants.types import TInterpretor
+from ..constants.config import LEGEND_POSITION_Y
+from ..utils.bot.globals import getOrSetCurrentGlobal, getPreviousResult
 
 
 def setPlotResponsibleAxesX(ax: axes):

@@ -4,17 +4,17 @@ from aiogram.types import CallbackQuery
 from aiogram.methods import AnswerCallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from source.db.get import getReminders
-from source.db.remove import removeReminder
-from source.db.insert import insertReminder
+from ..db.get import getReminders
+from ..db.remove import removeReminder
+from ..db.insert import insertReminder
 
-from source.utils.helpers import getTag
-from source.init.globals import globalsList
-from source.utils.datetime import nextDateByPeriod
-from source.utils.bot.handlers import remindersHandler
-from source.utils.bot.globals import getOrSetCurrentGlobal
-from source.utils.bot.helpers import changeMessage, getReminderPeriodName
-from source.utils.bot.keyboard import getButtons, getRemindersKeyboardFab
+from ..utils.helpers import getTag
+from ..init.globals import globalsList
+from ..utils.datetime import nextDateByPeriod
+from ..utils.bot.handlers import remindersHandler
+from ..utils.bot.globals import getOrSetCurrentGlobal
+from ..utils.bot.helpers import changeMessage, getReminderPeriodName
+from ..utils.bot.keyboard import getButtons, getRemindersKeyboardFab
 
 
 async def showReminders(callback: CallbackQuery) -> AnswerCallbackQuery:

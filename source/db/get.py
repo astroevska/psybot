@@ -1,7 +1,7 @@
 from pymongo.cursor import Cursor
 
-from source.db.main import get_database
-from source.constants.types import TDBFilters
+from ..db.main import get_database
+from ..constants.types import TDBFilters
 
 
 def getTests(filters: TDBFilters = {}) -> Cursor:

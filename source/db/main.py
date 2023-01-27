@@ -1,10 +1,13 @@
+from typing import Any
 from pymongo import MongoClient
+from pymongo.database import Database
+from pymongo.mongo_client import MongoClient
 
-from source.constants.config import MONGODB_CONNECTION
+from ..constants.config import MONGODB_CONNECTION
 
 
-def get_database() -> MongoClient:
-    client = MongoClient(MONGODB_CONNECTION)
+def get_database() -> Database[Any]:
+    client: MongoClient = MongoClient(MONGODB_CONNECTION)
 
     return client['psybot']
 

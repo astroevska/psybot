@@ -2,10 +2,10 @@ import asyncio
 from typing import Any, Coroutine
 from datetime import datetime, timedelta
 
-from source.db.get import getReminders
-from source.init.bot import sendMessage
-from source.db.update import updateReminder
-from source.utils.datetime import nextDateByPeriod
+from ..db.get import getReminders
+from ..init.bot import sendMessage
+from ..db.update import updateReminder
+from ..utils.datetime import nextDateByPeriod
 
 
 async def sendRemind(chat_id: int, text: str, sleepTime: int, nextDateTime: datetime, r: Any):

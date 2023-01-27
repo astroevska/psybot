@@ -6,14 +6,14 @@ from aiogram.methods import AnswerCallbackQuery
 from aiogram.types import CallbackQuery, Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from source.utils.helpers import getTag
-from source.utils.plot import getPlotImg
-from source.db.insert import insertResult
-from source.init.globals import globalsList
-from source.db.remove import removeUnfinished
-from source.utils.bot.keyboard import getButtons, getAnswersKeyboardFab
-from source.utils.bot.helpers import clearStartMessage, changeMessage, getHelpMessage
-from source.utils.bot.globals import appendAnswer, getOrSetCurrentGlobal, clearTestData, clearUnfinishedTimeout, setResult, startUnfinishedTimeout
+from ...utils.helpers import getTag
+from ...utils.plot import getPlotImg
+from ...db.insert import insertResult
+from ...init.globals import globalsList
+from ...db.remove import removeUnfinished
+from ...utils.bot.keyboard import getButtons, getAnswersKeyboardFab
+from ...utils.bot.helpers import clearStartMessage, changeMessage, getHelpMessage
+from ...utils.bot.globals import appendAnswer, getOrSetCurrentGlobal, clearTestData, clearUnfinishedTimeout, setResult, startUnfinishedTimeout
 
 
 async def handleFirstQuestion(callback: CallbackQuery) -> AnswerCallbackQuery:

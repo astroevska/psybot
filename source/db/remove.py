@@ -1,5 +1,5 @@
-from source.db.main import get_database
-from source.constants.types import TDBFilters
+from ..db.main import get_database
+from ..constants.types import TDBFilters
 
 
 def removeReminder(filters: TDBFilters = {}):

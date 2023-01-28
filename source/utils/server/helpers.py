@@ -8,8 +8,10 @@ from asyncio.coroutines import iscoroutinefunction
 from ...utils.helpers import json_serialize
 
 def getHandlerFactory(getter, keys=[]):
-    def get_handler(request):
-        return web.Response(body=json_serialize(list(getter({k:request.rel_url.query[k] for k in keys if k in request.rel_url.query}))))
+    async def get_handler(request):
+        filters = {k:request.rel_url.query[k] for k in keys if k in request.rel_url.query}
+
+        return web.Response(text=json_serialize(list(getter(filters))))
 
     return get_handler
 

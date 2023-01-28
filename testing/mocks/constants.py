@@ -8,13 +8,13 @@ INITIAL_ID = ObjectId('63d4e0ec4a669a4998b3bb81')
 
 
 TEST_FOR_UPDATE: TTest = {
-    "_id": INITIAL_ID,
     "name": "test 2",
     "description": "test two description",
     "content": {
         "questions": ["question 1", "question 2", "question 3"],
         "interpretor": [{"key1": [1, 2]}, {"key2": [3, 4]}, {"key3": [5, 6]}],
     },
+    "_id": INITIAL_ID
 }
 
 

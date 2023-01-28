@@ -1,7 +1,7 @@
 import pytest
 from mongomock import MongoClient
 
-from testing.mocks.constants import INITIAL_TEST
+from testing.mocks.constants import INITIAL_TESTS
 
 
 @pytest.fixture
@@ -18,4 +18,5 @@ def mongo_db(mongo_uri):
 
 @pytest.fixture(autouse=True)
 def setup_test_data(mongo_db):
-    mongo_db.tests.insert_one(INITIAL_TEST)
+    for t in INITIAL_TESTS:
+        mongo_db.tests.insert_one(t)

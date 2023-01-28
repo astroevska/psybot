@@ -3,6 +3,7 @@ from aiohttp import web
 from dateutil import parser
 from datetime import datetime
 from bson.objectid import ObjectId
+from asyncio.coroutines import iscoroutinefunction
 
 from ...utils.helpers import json_serialize
 
@@ -19,7 +20,7 @@ def postHandlerFactory(post_method, required={}, isDateNeed=False, updateGetter=
         except Exception as e:
             return web.json_response({"status": "error", "message": "Invalid JSON", "details": e})
 
-        if (updateGetter and "_id" not in data) or not all([all([subkey in data[field] for subkey in required[idx]]) if type(required[idx]) == list else field in data for idx, field in enumerate(required)]):
+        if (updateGetter and "_id" not in data) or not all([all([subkey in data[required[idx - 1]] for subkey in field]) if type(field) == list else field in data for idx, field in enumerate(required)]):
             return web.json_response({"status": "error", "message": "Identifiers is undefined."})
 
         try:
@@ -36,10 +37,16 @@ def postHandlerFactory(post_method, required={}, isDateNeed=False, updateGetter=
             if isDateNeed:
                 response["date"] = parser.parse(str(datetime.now()))
 
-            post_method({"$set": response}, {'_id': ObjectId(currentData['_id']['$oid'])}) if updateGetter else await post_method(response)
+            if updateGetter:
+                post_method({"$set": response}, {'_id': ObjectId(currentData['_id']['$oid'])})
+            elif iscoroutinefunction(post_method):
+                await post_method(response)
+            else:
+                post_method(response)
+
+            return web.json_response({"message": data, "status": "OK"})
+
         except Exception as e:
             return web.json_response({"status": "error", "message": f"Request is failed. {e}"})
-
-        return web.json_response({"data": data, "status": "OK"})
 
     return post_handler

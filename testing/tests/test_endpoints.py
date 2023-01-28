@@ -4,7 +4,13 @@ from source.constants.types import TTest
 from testing.fixtures.mongodb import *
 from testing.fixtures.aiohttp import *
 from testing.mocks.constants import INITIAL_ID, INSERTED_TEST, TEST_FOR_UPDATE
-from testing.utils import post_endpoint_test_handler, mongo_check_update
+from testing.utils import get_endpoint_test_handler, post_endpoint_test_handler, mongo_check_update
+
+
+@pytest.mark.asyncio
+async def test_get_tests(cli):
+    """Is the /tests endpoint really return the tests list"""
+    await get_endpoint_test_handler(cli, '/tests', INITIAL_TESTS, INITIAL_ID)
 
 
 @pytest.mark.asyncio

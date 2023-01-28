@@ -4,7 +4,7 @@ from ..init.bot import sendMessage
 from ..db.update import updateTest, updateUser
 from ..db.insert import insertResult, insertTest, insertUser
 from ..utils.server.helpers import getHandlerFactory, postHandlerFactory
-from ..db.get import getTests, getReminders, getResults, getUsers, getUser
+from ..db.get import getTests, getTest, getReminders, getResults, getUsers, getUser
 
 
 async def start_server():
@@ -17,7 +17,7 @@ app = web.Application()
 
 app.router.add_get('/tests', getHandlerFactory(getTests, ['name']))
 app.router.add_post('/tests/add', postHandlerFactory(insertTest, ["name", "description", "content", ["questions", "interpretor"]]))
-app.router.add_post('/tests/update', postHandlerFactory(updateTest, ["name", "description", "content", ["questions", "interpretor"]], False, getTests))
+app.router.add_post('/tests/update', postHandlerFactory(updateTest, ["name", "description", "content", ["questions", "interpretor"]], False, getTest))
 
 app.router.add_get('/users', getHandlerFactory(getUsers, ['id', 'name', 'telegram_id', 'telegram_username']))
 app.router.add_post('/users/add', postHandlerFactory(insertUser, ["name"]))

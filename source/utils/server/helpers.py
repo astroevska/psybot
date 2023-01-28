@@ -13,22 +13,28 @@ def getHandlerFactory(getter, keys=[]):
 
     return get_handler
 
-def postHandlerFactory(post_method, required={}, isDateNeed=False, updateGetter=None):
+def postHandlerFactory(post_method, required=[], isDateNeed=False, updateGetter=None):
     async def post_handler(request):
         try:
             data = await request.json()
         except Exception as e:
             return web.json_response({"status": "error", "message": "Invalid JSON", "details": e})
 
-        if (updateGetter and "_id" not in data) or not all([all([subkey in data[required[idx - 1]] for subkey in field]) if type(field) == list else field in data for idx, field in enumerate(required)]):
+        isUpdate = bool(updateGetter)
+
+        if (isUpdate and "_id" not in data) or not all([all([subkey in data[required[idx - 1]] for subkey in field]) if type(field) == list else field in data for idx, field in enumerate(required)]):
             return web.json_response({"status": "error", "message": "Identifiers is undefined."})
 
         try:
-            if updateGetter:
-                if len(data) <= len(required):
+            if isUpdate:
+                if len(data) < len(required):
                     return web.json_response({"status": "error", "message": "You had updated no one field."})
 
                 currentData = json.loads(json_serialize(updateGetter({'_id': ObjectId(data['_id'])})))
+
+                if not currentData:
+                    return web.json_response({"status": "error", "message": "You had updated no one field."})
+
                 response = {**{k: currentData[k] for k in currentData if k != '_id'}, **{k: data[k] for k in data if k != '_id'}}
 
             else:
@@ -37,8 +43,8 @@ def postHandlerFactory(post_method, required={}, isDateNeed=False, updateGetter=
             if isDateNeed:
                 response["date"] = parser.parse(str(datetime.now()))
 
-            if updateGetter:
-                post_method({"$set": response}, {'_id': ObjectId(currentData['_id']['$oid'])})
+            if bool(isUpdate):
+                post_method({'_id': ObjectId(currentData['_id']['$oid'])}, {"$set": response})
             elif iscoroutinefunction(post_method):
                 await post_method(response)
             else:

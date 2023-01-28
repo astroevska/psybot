@@ -12,7 +12,7 @@ async def sendRemind(chat_id: int, text: str, sleepTime: int, nextDateTime: date
     await asyncio.sleep(sleepTime)
 
     try:
-        await updateReminder({"$set": {**r, "next": nextDateByPeriod(r['period'], nextDateTime)}}, {'_id': r['_id']})
+        await updateReminder({'_id': r['_id']}, {"$set": {**r, "next": nextDateByPeriod(r['period'], nextDateTime)}})
     except Exception as e:
         print(e)
 

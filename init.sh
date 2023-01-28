@@ -19,4 +19,4 @@ perl -i -pe"s/t123456789/$1/g" .env
 perl -i -pe"s/mongodb123456789/$(echo $(echo $2 | sed 's/[\/&\@]/\\&/g'))/g" .env
 
 # start bot
-python source/main.py
+python main.py

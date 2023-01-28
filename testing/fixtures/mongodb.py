@@ -19,8 +19,3 @@ def mongo_db(mongo_uri):
 @pytest.fixture(autouse=True)
 def setup_test_data(mongo_db):
     mongo_db.tests.insert_one(INITIAL_TEST)
-
-
-@pytest.fixture(autouse=True)
-def teardown_test_data(mongo_db):
-    mongo_db.tests.delete_many({})

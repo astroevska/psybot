@@ -2,17 +2,17 @@ from ..db.main import get_database
 from ..constants.types import TDBFilters, TReminder, TTest, TUser, TUnfinishedTest
 
 
-def updateReminder(data: TReminder, filters: TDBFilters = {}):
+def updateReminder(filters: TDBFilters, data: TReminder):
     get_database()["reminders"].update_one(filters, data)
 
 
-def updateTest(data: TTest, filters: TDBFilters = {}):
+def updateTest(filters: TDBFilters, data: TTest):
     get_database()["tests"].update_one(filters, data)
 
 
-def updateUser(data: TUser, filters: TDBFilters = {}):
+def updateUser(filters: TDBFilters, data: TUser):
     get_database()["users"].update_one(filters, data)
 
 
-def updateUnfinished(data: TUnfinishedTest, filters: TDBFilters = {}):
+def updateUnfinished(filters: TDBFilters, data: TUnfinishedTest):
     get_database()["unfinished_tests"].update_one(filters, data, upsert=True)

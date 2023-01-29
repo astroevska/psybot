@@ -8,8 +8,15 @@ def getTests(filters: TDBFilters = {}) -> Cursor:
     return get_database()["tests"].find(filters)
 
 
+def getTest(filters: TDBFilters = {}) -> Cursor:
+    return get_database()["tests"].find_one(filters)
+
+
 def getResults(filters: TDBFilters = {}) -> Cursor:
     return get_database()["results"].find(filters)
+
+def getResult(filters: TDBFilters = {}) -> Cursor:
+    return get_database()["results"].find_one(filters)
 
 
 def getUsers(filters: TDBFilters = {}) -> Cursor:
@@ -24,9 +31,17 @@ def getReminders(filters: TDBFilters = {}) -> Cursor:
     return get_database()["reminders"].find(filters)
 
 
+def getReminder(filters: TDBFilters = {}) -> Cursor:
+    return get_database()["reminders"].find_one(filters)
+
+
 def getUnfinished(filters: TDBFilters = {}) -> Cursor:
     return get_database()["unfinished_tests"].find_one(filters)
 
 
 def getButtons(filters: TDBFilters = {}) -> Cursor:
     return get_database()["buttons"].find(filters)
+
+
+def getButton(filters: TDBFilters = {}) -> Cursor:
+    return get_database()["buttons"].find_one(filters)

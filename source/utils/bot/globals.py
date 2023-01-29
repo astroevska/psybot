@@ -75,16 +75,17 @@ async def clearTestData(user: User):
 
 def saveUnfinishedResults(globalsIdx: int, user: User, data: TResultData):
     try:
-        updateUnfinished({
+        updateUnfinished(
+            {
+            "chat_id": user.id,
+            "test_id": globalsList[globalsIdx].currentTest["_id"]
+        },{
             "$set": {
                 "datetime": datetime.now(),
                 "userId": globalsList[globalsIdx].currentUser,
                 "chat_id": user.id,
                 "data": data
             }
-        }, {
-            "chat_id": user.id,
-            "test_id": globalsList[globalsIdx].currentTest["_id"]
         })
     except Exception as e:
         print(e)

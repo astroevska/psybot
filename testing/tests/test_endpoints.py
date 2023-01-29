@@ -3,8 +3,9 @@ from source.constants.types import TTest
 
 from testing.fixtures.mongodb import *
 from testing.fixtures.aiohttp import *
+from testing.utils import mongo_check_update
+from testing.handlers import get_endpoint_test_handler, post_endpoint_test_handler
 from testing.mocks.constants import INITIAL_ID, INSERTED_TEST, TEST_FOR_UPDATE
-from testing.utils import get_endpoint_test_handler, post_endpoint_test_handler, mongo_check_update
 
 
 @pytest.mark.asyncio

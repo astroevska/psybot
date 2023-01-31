@@ -1,7 +1,7 @@
 import pytest
 from mongomock import MongoClient
 
-from testing.mocks.constants import INITIAL_REMINDERS, INITIAL_RESULTS, INITIAL_TESTS, INITIAL_USERS
+from testing.mocks.constants import INITIAL_BUTTONS, INITIAL_REMINDERS, INITIAL_RESULTS, INITIAL_TESTS, INITIAL_UNFINISHED_TESTS, INITIAL_USERS
 
 
 @pytest.fixture
@@ -31,3 +31,7 @@ def setup_test_data(mongo_db):
         mongo_db.results.insert_one(r)
     for e in INITIAL_REMINDERS:
         mongo_db.reminders.insert_one(e)
+    for n in INITIAL_UNFINISHED_TESTS:
+        mongo_db.unfinished_tests.insert_one(n)
+    for b in INITIAL_BUTTONS:
+        mongo_db.buttons.insert_one(b)

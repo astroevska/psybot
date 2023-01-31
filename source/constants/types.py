@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Literal, NewType, TypeVar, TypedDict, Union,
 TResultDF = type(List[int])
 TDBFilters = Dict[str, Any]
 TQuestion = NewType('TQuestion', List[str])
-TResultData = NewType('TResultData', Dict[str, List[int]])
+TResultData = NewType('TResultData', List[int])
 TInterpretor = NewType('TInterpretor', List[Union[int, str]])
 TPlotSupportedDataTypes = TypeVar('TPlotSupportedDataTypes', int, float, uint64, datetime, date, time, datetime64)
 
@@ -29,6 +29,7 @@ class TUnfinishedTest(TypedDict):
     userId: str
     chat_id: str
     datetime: datetime
+    test_name: str
     data: TResultData
 
 # types for BUTTONS_CONFIG
@@ -61,7 +62,7 @@ class TGlobals:
 
     def __iter__(self):
         return iter(astuple(self))
-    
+
     def __getitem__(self, key):
         return getattr(self, key)
 

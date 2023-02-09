@@ -6,8 +6,7 @@ from datetime import date
 from bson import json_util
 from functools import reduce
 from threading import Thread
-from collections.abc import Iterable, ItemsView
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union, ItemsView, Iterable
 
 from ..utils.datetime import datetimeToDateStr, strToDate
 from ..constants.types import T2dPlotDF, T2dPlotData, TPlotSupportedDataTypes, TInterpretor

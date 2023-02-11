@@ -6,7 +6,9 @@ A [Telegram](https://telegram.org) bot based on [aiogram](https://github.com/aio
 - ⏰ **Reminders** (bot can remind you to pass a test by your self-defined time)
 - 📊 **Statistics of your results**
 - 🌍 **EN/UA/RU** multilanguage supporting
+- 🐳 **Dockerized**
 - 📡 **Full-provided REST API**
+- 🎛 **Full testing coverage** provided by [pytest](https://docs.pytest.org/en/7.2.x) and [unittest](https://docs.python.org/3/library/unittest.html) libraties.
 
 ## Details
 The main mission of the bot - helping people (especially developers) to prevent burnout and depression. The bot allows:
@@ -18,22 +20,36 @@ The main mission of the bot - helping people (especially developers) to prevent 
 1. Python3.9 or newer.
 2. [Pyenv](https://github.com/pyenv/pyenv)
 3. [MongoDB Atlas](https://github.com/mongodb/mongodb-atlas-cli)
+4. [Docker](https://docs.docker.com/get-docker)
 
 ## Installation
-I created a Bash script that provides a simple and quick initialization of the bot. The script creates and activates a virtual environment, installs packages from `requirements.txt`, replaces constants with private access tokens for **Telegram Bot API** and **MongoDB**, and starts the bot. 
+I created a Bash script that provides a simple and quick initialization of the bot. The script creates and activates a virtual environment or docker container, installs packages from `requirements.txt`, replaces constants with private access tokens for **Telegram Bot API** and **MongoDB**, and starts the bot.
+- `YOUR_TELEGRAM_BOT_TOKEN` is a **Telegram Bot Access Token**. There is a getting token [here](https://t.me/BotFather) through creating a new Telegram bot.
+- `YOUR_MONGO_DB_CONNECTION_STRING` is a connection string for **MongoDB** that is accessible after the MongoDB Cluster creation. [See details](https://www.mongodb.com/docs/guides/atlas/connection-string).
 
-**The only thing you need is to run an `init.sh` file by the following command in your CLI:**
-```
+#### **At first**, you need to get psybot's codebase.
+```bash
 $ git clone https://github.com/annagerd/psybot.git
 $ cd psybot
-$ ./init.sh YOUR_TELEGRAM_BOT_TOKEN YOUR_MONGO_DB_CONNECTION_STRING
 ```
-1. `YOUR_TELEGRAM_BOT_TOKEN` is a **Telegram Bot Access Token**. There is a getting token [here](https://t.me/BotFather) through creating a new Telegram bot.
-2. `YOUR_MONGO_DB_CONNECTION_STRING` is a connection string for **MongoDB** that is accessible after the MongoDB Cluster creation. [See details](https://www.mongodb.com/docs/guides/atlas/connection-string).
+**Then there are two ways to start the bot: natively by Python or by Docker.**
+#### **Python launching**
+1. The only thing you need is to run an `init.sh` file by the following command in your CLI:
+```bash
+$ ./init.sh python YOUR_TELEGRAM_BOT_TOKEN YOUR_MONGO_DB_CONNECTION_STRING
+```
+#### **By Docker**
+0. If you haven't installed Docker, [install it](https://docs.docker.com/get-docker).
+1. Run the Docker
+2. Run an `init.sh` file by the following command in your CLI. 
+```bash
+$ ./init.sh docker YOUR_TELEGRAM_BOT_TOKEN YOUR_MONGO_DB_CONNECTION_STRING
+```
+
+The bot should start if you used the correct syntax and passed the right data. Congrats!
 
 ## Goals
 - Deployment (Heroku, Vercel or DigitalOcean).
-- Dockerize the bot (to facilitate deployment).
 - Add more tests (depression, anxiety, burnout and etc).
 - Start to create an IT ecosystem of psychological self-care with the bot as a part of it.
 
@@ -41,6 +57,7 @@ $ ./init.sh YOUR_TELEGRAM_BOT_TOKEN YOUR_MONGO_DB_CONNECTION_STRING
 - [Aiogram 3 docs](https://docs.aiogram.dev/en/dev-3.x/index.html). This version is used in my project.
 - [Aiogram 2 docs](https://docs.aiogram.dev/en/latest/index.html). I don't use this version here, but the docs of the second version are also useful because of a lot of useful information and advices that is still actual for also the third version.
 - [Aiohttp docs](https://docs.aiohttp.org/en/stable). This library is a core library of **aiogram web server**, and it's also used here for REST API endpoints.
+- [Docker docs](https://docs.docker.com). The bot is dockerized to be independent of environment.
 - [Asyncio](https://docs.python.org/3/library/threading.html) and [threading](https://docs.python.org/3/library/asyncio.html) libraries docs. These libraries are used for:
   - reminding users;
   - parallel launching of the bot and the REST API server.
